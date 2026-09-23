@@ -1,0 +1,41 @@
+# ── COMMON PROJECT REQUIREMENTS ───────────────────────────
+# This file documents shared dependencies across
+# backend and frontend for reference purposes.
+# Install backend deps from backend/requirements.txt
+# Install frontend deps from frontend/requirements.txt
+
+# ── Python Version ─────────────────────────────────────────
+# Python >= 3.11 required for both services
+
+# ── Shared Libraries ───────────────────────────────────────
+python-dotenv           # env loading — both services
+httpx                   # HTTP client — both services
+pypdf                   # PDF parsing — both services
+python-dateutil         # date handling — both services
+
+# ── External Services Used ─────────────────────────────────
+# Google Gemini API      — gemini-3.6-flash, gemini-3.5-flash-lite, gemini-embedding-001
+# OpenRouter API         — inkling:free, gpt-oss-120b (fallback only)
+# Pinecone               — hackathon-index, dimension 3072, cosine metric
+# Resend                 — email alerts, onboarding@resend.dev sender
+# PostgreSQL             — primary relational database
+# APScheduler            — daily notification trigger at 08:00
+
+# ── Models Used ────────────────────────────────────────────
+# Orchestrator:  gemini-3.6-flash
+# Sub-Agents:    gemini-3.5-flash-lite
+# Embeddings:    models/gemini-embedding-001
+# Reranker:      BAAI/bge-reranker-v2-m3 (local)
+# Fallback:      thinkingmachines/inkling:free
+# Backup:        openai/gpt-oss-120b
+
+# ── Setup Order ────────────────────────────────────────────
+# 1. Clone repo
+# 2. Create venv: python -m venv venv
+# 3. Activate venv
+# 4. pip install -r backend/requirements.txt
+# 5. pip install -r frontend/requirements.txt
+# 6. Copy .env.example files and fill values
+# 7. Run alembic migrations: alembic upgrade head
+# 8. Run backend: uvicorn app.main:app --reload
+# 9. Run frontend: streamlit run app.py

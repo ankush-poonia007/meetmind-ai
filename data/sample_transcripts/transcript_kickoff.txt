@@ -1,0 +1,148 @@
+Meeting Title: Project Kickoff — Student Portal Redesign
+Date: September 25, 2026
+Time: 10:00 AM
+Attendees: Aryan (Project Manager), Sneha (Frontend Developer),
+           Rahul (Database Designer), Priya (Schema Architect),
+           Dev (Documentation Lead)
+
+[10:00] Aryan: Good morning everyone. Let's get started with the kickoff
+for the Student Portal Redesign project. I want everyone to be clear
+on their responsibilities before we leave this meeting.
+
+[10:02] Aryan: The project deadline is October 15, 2026. That gives us
+exactly three weeks. I will be managing the overall timeline and
+conducting daily standups at 9 AM starting tomorrow.
+
+[10:04] Sneha: Understood. From my side, I will start working on the
+wireframes for the student dashboard today itself. I should have the
+first draft ready by September 27.
+
+[10:06] Aryan: Good. Sneha, make sure the wireframes follow the design
+system we agreed on last week. The primary color palette should be
+blue and white.
+
+[10:08] Rahul: I have reviewed the existing database structure. There
+are several redundant tables that need to be removed. I will begin
+the database audit today and share a report by September 26.
+
+[10:10] Priya: Once Rahul shares the audit report, I will start working
+on the new schema design. The schema needs to support role-based
+access for students, faculty, and admins. My target is to have the
+schema finalized by September 28.
+
+[10:12] Aryan: Priya, please make sure the schema accounts for future
+scalability. We expect the portal to handle 5000 concurrent users
+at peak.
+
+[10:14] Priya: Noted. I will include indexing strategies and partitioning
+in the schema design to handle that load.
+
+[10:16] Dev: I have started setting up the documentation repository on
+GitHub. I will create the initial project documentation structure
+by September 26. This will include the project overview, architecture
+decisions, and contribution guidelines.
+
+[10:18] Aryan: Dev, please also document all the decisions we make in
+this meeting and future meetings. Decision logs are critical for
+this project.
+
+[10:20] Dev: Will do. I will create a decisions log file and update it
+after every meeting going forward.
+
+[10:22] Sneha: I have a question about the frontend framework. Are we
+going with React or sticking with the current vanilla JavaScript?
+
+[10:24] Aryan: Good question. After discussing with the technical leads
+last week, we have decided to migrate to React. This will make the
+portal more maintainable and allow component reuse.
+
+[10:26] Sneha: Perfect. In that case, I will also set up the React
+project structure along with the wireframes. I will use Vite as
+the build tool.
+
+[10:28] Rahul: Should I also look into database connection pooling?
+The current setup has issues with too many open connections
+during peak hours.
+
+[10:30] Aryan: Yes, absolutely. Add that to your audit scope, Rahul.
+We need a solution for connection pooling before development starts.
+
+[10:32] Rahul: I will include PgBouncer as a recommendation in my
+audit report. Deadline remains September 26.
+
+[10:34] Priya: I also want to flag that the current schema has no
+proper foreign key constraints. This is causing data integrity
+issues. I will fix this in the new schema design.
+
+[10:36] Aryan: That is a critical fix. Make sure you document every
+constraint you add and the reason for it, Priya.
+
+[10:38] Dev: Should I coordinate with Priya to document the schema
+decisions as she works on them?
+
+[10:40] Aryan: Yes, Dev and Priya should sync daily from September 27
+onwards. Dev, add a daily sync with Priya to your calendar.
+
+[10:42] Dev: Done. I will reach out to Priya today to set that up.
+
+[10:44] Sneha: For the frontend, I will also need the API contracts
+as early as possible. Can we have at least the core endpoints
+defined by September 29?
+
+[10:46] Aryan: Rahul and Priya, can you two coordinate to have the
+core API contracts ready by September 29?
+
+[10:48] Rahul: That should be feasible once the schema is finalized.
+I will work with Priya on this.
+
+[10:50] Priya: Agreed. We will target September 29 for core API contracts.
+
+[10:52] Aryan: Good. I will schedule a mid-project review for October 5.
+Everyone should have their first working modules ready by then.
+
+[10:54] Dev: I will prepare a progress report template for the
+October 5 review. Should it include blockers and risks as well?
+
+[10:56] Aryan: Yes, Dev. Include a risks section and a decisions
+taken section in the report template.
+
+[10:58] Sneha: One more thing. I will need design assets like icons
+and illustrations. Should I source them from a free library or
+do we have a budget for paid assets?
+
+[11:00] Aryan: Use free libraries for now. Recommend a few options
+and I will approve one by September 26. This is a soft deadline
+but try to finalize it early so you are not blocked.
+
+[11:02] Sneha: Understood. I will send three options by September 25
+end of day.
+
+[11:04] Aryan: Perfect. Let me summarize the action items before we close.
+
+[11:06] Aryan: Sneha - wireframes by September 27, React setup with
+Vite, design asset options by September 25 EOD.
+
+[11:08] Aryan: Rahul - database audit report with connection pooling
+recommendation by September 26.
+
+[11:10] Aryan: Priya - schema design with constraints, indexing, and
+partitioning by September 28. API contracts with Rahul by September 29.
+
+[11:12] Aryan: Dev - documentation structure by September 26, decisions
+log maintained going forward, daily sync with Priya from September 27,
+progress report template by October 5.
+
+[11:14] Aryan: I will send the official project charter document by
+today EOD and schedule the October 5 review on the calendar.
+
+[11:16] Aryan: Any final questions?
+
+[11:18] Sneha: No blockers from my side.
+
+[11:20] Rahul: Clear on my tasks.
+
+[11:22] Priya: All clear.
+
+[11:24] Dev: Ready to go.
+
+[11:26] Aryan: Great. Meeting adjourned. Let us build something great.

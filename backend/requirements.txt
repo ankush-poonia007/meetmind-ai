@@ -1,0 +1,54 @@
+# ── Web Framework ──────────────────────────────────────────
+fastapi
+uvicorn[standard]
+python-multipart
+
+# ── Database ───────────────────────────────────────────────
+sqlalchemy
+alembic
+psycopg2-binary
+
+# ── Pydantic & Settings ────────────────────────────────────
+pydantic
+pydantic-settings
+
+# ── LangChain Core ─────────────────────────────────────────
+langchain
+langchain-core
+langchain-community
+langgraph
+
+# ── LangChain Integrations ─────────────────────────────────
+langchain-google-genai
+langchain-openai
+langchain-pinecone
+
+# ── Google Gemini ──────────────────────────────────────────
+google-generativeai
+
+# ── OpenRouter (via OpenAI client) ─────────────────────────
+openai
+
+# ── Pinecone ───────────────────────────────────────────────
+pinecone-client
+
+# ── RAG ────────────────────────────────────────────────────
+sentence-transformers
+rank-bm25
+pypdf
+python-docx
+
+# ── Email ──────────────────────────────────────────────────
+resend
+
+# ── Scheduler ──────────────────────────────────────────────
+apscheduler
+
+# ── Utilities ──────────────────────────────────────────────
+python-dotenv
+python-jose
+httpx
+aiofiles
+
+# ── Logging ────────────────────────────────────────────────
+loguru

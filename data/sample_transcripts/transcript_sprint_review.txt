@@ -1,0 +1,133 @@
+Meeting Title: Sprint 1 Review — Student Portal Redesign
+Date: October 5, 2026
+Time: 09:00 AM
+Attendees: Aryan (Project Manager), Sneha (Frontend Developer),
+           Rahul (Database Designer), Priya (Schema Architect),
+           Dev (Documentation Lead)
+
+[09:00] Aryan: Good morning team. This is our Sprint 1 review.
+Everyone please share your progress and blockers.
+
+[09:02] Sneha: I completed the wireframes on September 27 as planned.
+The React project is set up with Vite. I have built the login page
+and the student dashboard shell. Currently working on the
+course enrollment component.
+
+[09:04] Aryan: Good progress, Sneha. Is the course enrollment component
+on track?
+
+[09:06] Sneha: Yes but I am blocked on the API contracts. I need the
+enrollment endpoints to proceed further. Without those I cannot
+wire up the components.
+
+[09:08] Rahul: I submitted the database audit report on September 26.
+PgBouncer setup is done in the development environment. I have
+also started working on the enrollment and authentication tables.
+
+[09:10] Aryan: Rahul, when will the core API contracts be ready?
+Sneha is blocked.
+
+[09:12] Rahul: Priya and I are targeting October 7 for the core
+endpoints. We hit a dependency issue with the role-based access
+schema that pushed us two days.
+
+[09:14] Priya: The schema is finalized and reviewed. Foreign key
+constraints are in place. I documented every constraint with
+justification for Dev. The role-based access model took more
+time than expected because we needed three levels of permissions
+instead of two.
+
+[09:16] Aryan: Three levels is fine if it is necessary. Priya, please
+send me a summary of the role model by today EOD so I can
+validate it.
+
+[09:18] Priya: Will do. I will send it by 5 PM today.
+
+[09:20] Dev: Documentation structure is complete on GitHub. I have
+been maintaining the decisions log since the kickoff meeting.
+It currently has 14 decisions logged. I also completed the
+architecture overview document.
+
+[09:22] Aryan: Excellent, Dev. Is the progress report template ready?
+
+[09:24] Dev: Yes, I am using it right now to track this meeting.
+I will share the filled report with everyone by today EOD.
+
+[09:26] Aryan: Good. Now let us discuss risks.
+
+[09:28] Sneha: My main risk is the API dependency. If contracts
+are delayed beyond October 7, the frontend will fall behind.
+
+[09:30] Aryan: Noted. Rahul and Priya, October 7 is a hard deadline
+for the core API contracts. Please treat it as non-negotiable.
+
+[09:32] Rahul: Understood. We will prioritize enrollment and
+authentication endpoints first since those are blocking Sneha.
+
+[09:34] Priya: Agreed. I will clear my schedule for October 6
+to focus entirely on this with Rahul.
+
+[09:36] Dev: I also want to flag a risk. The contribution guidelines
+document is incomplete. I need inputs from each team member on
+their workflow. Can everyone submit their workflow description
+to me by October 8?
+
+[09:38] Aryan: Yes everyone please submit your workflow to Dev by
+October 8. This is important for onboarding any new team members.
+
+[09:40] Sneha: I will send mine by October 7.
+
+[09:42] Rahul: I will send mine by October 8.
+
+[09:44] Priya: I will send mine by October 7.
+
+[09:46] Aryan: Good. I will send mine today. Dev, send me a template
+for the workflow description so everyone follows the same format.
+
+[09:48] Dev: I will send the template within the hour.
+
+[09:50] Aryan: Let us now set Sprint 2 goals. Sneha, your goal is
+to complete course enrollment and student profile components
+by October 10.
+
+[09:52] Sneha: That is achievable once I get the API contracts.
+
+[09:54] Aryan: Rahul, your Sprint 2 goal is to complete all
+remaining tables and have the database ready for integration
+testing by October 10.
+
+[09:56] Rahul: Confirmed. I will also set up the test database
+environment by October 9.
+
+[09:58] Aryan: Priya, your Sprint 2 goal is to finalize all
+remaining API contracts and begin API implementation support
+by October 10.
+
+[10:00] Priya: Understood. I will complete contracts by October 7
+and begin implementation review by October 8.
+
+[10:02] Aryan: Dev, your Sprint 2 goal is to complete all documentation
+by October 10 and prepare the testing guide.
+
+[10:04] Dev: Understood. I will have the testing guide ready by
+October 9 so QA can begin on October 10.
+
+[10:06] Aryan: My goal for Sprint 2 is to complete the mid-project
+stakeholder report by October 10 and prepare the demo environment
+by October 12.
+
+[10:08] Aryan: Next review is October 12 at 9 AM. Everyone mark
+your calendars.
+
+[10:10] Aryan: Any final items?
+
+[10:12] Sneha: Nothing from my end.
+
+[10:14] Rahul: All clear.
+
+[10:16] Priya: Nothing further.
+
+[10:18] Dev: I will circulate the meeting notes within the hour.
+
+[10:20] Aryan: Thank you everyone. Good work on Sprint 1.
+Let us close the gaps in Sprint 2. Meeting adjourned.

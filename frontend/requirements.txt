@@ -1,0 +1,21 @@
+# ── Streamlit Framework ────────────────────────────────────
+streamlit
+
+# ── HTTP Client (calls FastAPI backend) ───────────────────
+httpx
+requests
+
+# ── Environment Variables ─────────────────────────────────
+python-dotenv
+
+# ── PDF Handling (upload preview) ─────────────────────────
+pypdf
+
+# ── Data Display ──────────────────────────────────────────
+pandas
+
+# ── Date & Time ───────────────────────────────────────────
+python-dateutil
+
+# ── Utilities ─────────────────────────────────────────────
+uuid

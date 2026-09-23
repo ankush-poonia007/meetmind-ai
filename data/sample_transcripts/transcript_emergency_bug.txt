@@ -1,0 +1,134 @@
+Meeting Title: Emergency Bug Review — Student Portal Production Issue
+Date: October 13, 2026
+Time: 02:00 PM
+Attendees: Aryan (Project Manager), Sneha (Frontend Developer),
+           Rahul (Database Designer), Priya (Schema Architect),
+           Dev (Documentation Lead)
+
+[14:00] Aryan: Emergency meeting called. We have a critical bug
+in production. The student login is failing for 30 percent of users.
+I need everyone to share what they know immediately.
+
+[14:02] Sneha: I checked the frontend logs. The login API call
+is returning a 403 error for users whose email contains uppercase
+letters. The frontend is sending the email exactly as the user
+types it without normalizing to lowercase.
+
+[14:04] Rahul: I checked the database. The email column is using
+a case-sensitive collation. So user@Gmail.com and user@gmail.com
+are being treated as different entries. This is the root cause.
+
+[14:06] Priya: This is a schema oversight on my part. The email
+field should have been defined with a case-insensitive collation
+or we should have enforced lowercase normalization at the
+application layer. I take responsibility for this.
+
+[14:08] Aryan: We are not here to assign blame. We need a fix
+in the next two hours. What are our options?
+
+[14:10] Rahul: Option one is to alter the email column collation
+to case-insensitive. This requires a migration and a brief
+downtime of about 10 minutes.
+
+[14:12] Priya: Option two is to add a database trigger that
+normalizes all incoming emails to lowercase before insert and
+update. No downtime required but adds complexity.
+
+[14:14] Sneha: Option three is to fix it at the frontend by
+converting all email inputs to lowercase before sending to the API.
+This is the fastest fix but only solves the symptom, not the root cause.
+
+[14:16] Aryan: We will do option one and option three together.
+Sneha, fix the frontend now. Rahul and Priya, prepare the migration.
+We deploy the frontend fix in 30 minutes and the migration tonight
+at midnight to minimize user impact.
+
+[14:18] Sneha: On it. I will push the frontend fix in 20 minutes.
+
+[14:20] Rahul: I will write the migration script now. Priya can
+you review it before we run it?
+
+[14:22] Priya: Yes. Send it to me as soon as it is ready.
+I will review within 15 minutes.
+
+[14:24] Aryan: Dev, document this entire incident. I need a full
+incident report by tomorrow morning October 14. Include root cause,
+impact, timeline, fix applied, and prevention measures.
+
+[14:26] Dev: Understood. I am documenting the timeline right now
+as we speak. Incident report will be ready by 9 AM October 14.
+
+[14:28] Aryan: Also Dev, update the decisions log with the decision
+to use option one and option three combined.
+
+[14:30] Dev: Done. Adding it now.
+
+[14:32] Sneha: Frontend fix is ready. Pushing to staging now for
+a quick smoke test.
+
+[14:34] Rahul: Migration script is ready. Sending to Priya now.
+
+[14:36] Priya: Received. Reviewing now.
+
+[14:38] Sneha: Staging test passed. The login is working for
+uppercase email addresses. Ready to push to production.
+
+[14:40] Aryan: Push it, Sneha. Rahul and Priya, continue with
+the migration review.
+
+[14:42] Sneha: Frontend fix deployed to production. Monitoring
+the error rate now.
+
+[14:44] Priya: Migration script reviewed and approved. One small
+change needed: we should back up the email column data before
+altering the collation. Rahul, add a backup step at the start.
+
+[14:46] Rahul: Good catch. Adding the backup step now. Will
+resend in 5 minutes.
+
+[14:48] Sneha: Error rate has dropped from 30 percent to zero.
+Frontend fix is working.
+
+[14:50] Aryan: Good. That stabilizes production for now.
+The migration is still needed for the permanent fix.
+
+[14:52] Rahul: Updated migration script sent to Priya.
+
+[14:54] Priya: Reviewed and approved. Migration is ready to run.
+Schedule it for midnight October 13.
+
+[14:56] Aryan: Confirmed. Rahul you are on midnight migration duty.
+Run it at 00:00 and message the group when complete.
+
+[14:58] Rahul: Confirmed. I will run the migration at midnight
+and send a status update immediately after.
+
+[15:00] Aryan: Dev, also add a prevention item to the documentation:
+all string fields that are used for lookup or authentication must
+be normalized to lowercase at both the application layer and
+the database layer. This is now a project standard.
+
+[15:02] Dev: Adding it to the coding standards document now.
+This will be enforced in all future schema reviews.
+
+[15:04] Priya: I will also update the schema review checklist
+to include collation verification for all string fields.
+Target: checklist updated by October 14 EOD.
+
+[15:06] Aryan: Good. Rahul, after the migration runs tonight,
+run the full authentication test suite and share results by
+9 AM October 14.
+
+[15:08] Rahul: Confirmed. Full auth test suite results by 9 AM
+October 14.
+
+[15:10] Aryan: Sneha, monitor the production error logs tonight
+and alert the group if anything spikes.
+
+[15:12] Sneha: Will do. I will check logs every hour until midnight.
+
+[15:14] Aryan: Final summary. Sneha has deployed the frontend fix.
+Migration runs tonight at midnight by Rahul. Priya approved the
+migration. Dev is writing the incident report due October 14 at 9 AM.
+Rahul sends test results by 9 AM October 14. Priya updates schema
+checklist by October 14 EOD. Production is stable. Meeting adjourned.
