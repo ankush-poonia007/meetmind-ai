@@ -1,0 +1,68 @@
+"""
+Canonical LangGraph state definition for MeetMind AI.
+
+Represents the shared context passing between supervisor and specialized sub-agents.
+State contract definition only — no graph nodes or routing logic.
+"""
+
+from typing import Any, Optional, TypedDict
+
+
+class MeetMindState(TypedDict, total=False):
+    """
+    Unified state schema for the MeetMind AI LangGraph multi-agent system.
+
+    Maintains execution context for:
+    - Main ingestion -> identity -> extraction -> confirmation pipeline
+    - Meeting-scoped Q&A pipeline
+    - Scheduled deadline notification pipeline
+    """
+
+    # ── Session ─────────────────────────────────────────────────────────────
+    user_id: str
+    session_action: str  # ingest | identify | extract | confirm | qa | notify | complete
+
+    # ── Meeting ─────────────────────────────────────────────────────────────
+    meeting_id: str
+    meeting_title: str
+    meeting_date: str
+    input_format: str  # pdf | txt | text
+    raw_transcript: str
+
+    # ── Ingestion ───────────────────────────────────────────────────────────
+    participants: list[dict[str, Any]]  # [{"name": str, "role": Optional[str]}]
+    chunks_stored: int
+    pinecone_namespace: str
+    ingestion_complete: bool
+
+    # ── Identity ────────────────────────────────────────────────────────────
+    user_name: str
+    user_role: str
+    user_mentions: list[str]
+    identity_confirmed: bool
+
+    # ── Extraction ──────────────────────────────────────────────────────────
+    extracted_tasks: list[dict[str, Any]]
+    extracted_highlights: list[dict[str, Any]]
+    extraction_complete: bool
+
+    # ── Confirmation ────────────────────────────────────────────────────────
+    user_confirmation: str  # yes | no | partial
+    confirmed_task_ids: list[str]
+    saved_tasks: int
+    confirmation_complete: bool
+
+    # ── Q&A ─────────────────────────────────────────────────────────────────
+    user_question: str
+    retrieved_chunks: list[str]
+    reranked_chunks: list[str]
+    qa_answer: str
+    qa_sources: list[dict[str, Any]]
+
+    # ── Notification ────────────────────────────────────────────────────────
+    tasks_due_soon: list[dict[str, Any]]
+    alerts_sent: int
+
+    # ── Control ─────────────────────────────────────────────────────────────
+    error: Optional[str]
+    final_response: str
