@@ -1,0 +1,527 @@
+/*
+ * MeetMind AI — Frontend Design System
+ * Shared CSS for Streamlit application styling.
+ *
+ * Color Palette:
+ *   Primary:    #6C5CE7 (Vibrant Purple)
+ *   Secondary:  #00B894 (Mint Green)
+ *   Accent:     #FD79A8 (Soft Pink)
+ *   Background: #0F0E17 (Deep Dark)
+ *   Surface:    #1A1A2E (Card Dark)
+ *   Text:       #FFFFFE (Pure White)
+ *   Muted:      #94A3B8 (Slate Gray)
+ *   Warning:    #FDCB6E (Amber)
+ *   Error:      #E17055 (Coral Red)
+ */
+
+/* ── Global Reset & Typography ─────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+.stApp {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── Hide Streamlit Default Elements & Tighten Top Gap ─────────── */
+
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    height: 1.5rem !important;
+}
+
+/* ── Streamlit Vertical Block Tightening ───────────────────────── */
+
+div[data-testid="stVerticalBlock"] {
+    gap: 0.65rem !important;
+}
+
+div[data-testid="stElementContainer"] {
+    margin-bottom: 0 !important;
+}
+
+/* ── Page Container ────────────────────────────────────────────── */
+
+.block-container {
+    padding-top: 1rem !important;
+    padding-bottom: 2rem !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    max-width: 1200px !important;
+}
+
+/* ── Brand Header ──────────────────────────────────────────────── */
+
+.brand-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.15rem 0;
+    margin-bottom: 0;
+}
+
+.brand-logo {
+    font-size: 1.85rem;
+    line-height: 1;
+}
+
+.brand-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6C5CE7, #a29bfe, #FD79A8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+}
+
+.brand-subtitle {
+    font-size: 0.78rem;
+    color: #94A3B8;
+    font-weight: 400;
+    margin-top: 1px;
+}
+
+/* ── Navigation Pills ─────────────────────────────────────────── */
+
+.nav-container {
+    display: flex;
+    gap: 6px;
+    padding: 4px;
+    background: rgba(26, 26, 46, 0.6);
+    border-radius: 10px;
+    border: 1px solid rgba(108, 92, 231, 0.15);
+    margin-bottom: 0.75rem;
+    backdrop-filter: blur(10px);
+}
+
+.nav-pill {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #94A3B8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    text-align: center;
+    flex: 1;
+    border: none;
+    background: transparent;
+}
+
+.nav-pill:hover {
+    color: #FFFFFE;
+    background: rgba(108, 92, 231, 0.15);
+}
+
+.nav-pill-active {
+    background: linear-gradient(135deg, #6C5CE7, #a29bfe) !important;
+    color: #FFFFFE !important;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+/* ── Cards ─────────────────────────────────────────────────────── */
+
+.meetmind-card {
+    background: linear-gradient(145deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+    border: 1px solid rgba(108, 92, 231, 0.12);
+    border-radius: 14px;
+    padding: 1.15rem 1.35rem;
+    margin-bottom: 0.65rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.meetmind-card:hover {
+    border-color: rgba(108, 92, 231, 0.35);
+    box-shadow: 0 8px 32px rgba(108, 92, 231, 0.1);
+    transform: translateY(-2px);
+}
+
+/* ── Stat Cards ────────────────────────────────────────────────── */
+
+.stat-card {
+    background: linear-gradient(145deg, rgba(26, 26, 46, 0.9), rgba(26, 26, 46, 0.5));
+    border: 1px solid rgba(108, 92, 231, 0.12);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6C5CE7, #a29bfe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.15;
+}
+
+.stat-label {
+    font-size: 0.78rem;
+    color: #94A3B8;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+
+/* ── Status Badges ─────────────────────────────────────────────── */
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.badge-pending {
+    background: rgba(253, 203, 110, 0.15);
+    color: #FDCB6E;
+    border: 1px solid rgba(253, 203, 110, 0.3);
+}
+
+.badge-complete {
+    background: rgba(0, 184, 148, 0.15);
+    color: #00B894;
+    border: 1px solid rgba(0, 184, 148, 0.3);
+}
+
+.badge-high {
+    background: rgba(225, 112, 85, 0.15);
+    color: #E17055;
+    border: 1px solid rgba(225, 112, 85, 0.3);
+}
+
+.badge-medium {
+    background: rgba(253, 203, 110, 0.15);
+    color: #FDCB6E;
+    border: 1px solid rgba(253, 203, 110, 0.3);
+}
+
+.badge-low {
+    background: rgba(0, 184, 148, 0.15);
+    color: #00B894;
+    border: 1px solid rgba(0, 184, 148, 0.3);
+}
+
+/* ── Hero Section (Landing) ────────────────────────────────────── */
+
+.hero-section {
+    text-align: center;
+    padding: 0.75rem 1rem 0;
+}
+
+.hero-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #6C5CE7 0%, #a29bfe 40%, #FD79A8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.15;
+    margin-bottom: 0.65rem;
+    letter-spacing: -0.75px;
+}
+
+.hero-subtitle {
+    font-size: 1.05rem;
+    color: #94A3B8;
+    max-width: 660px;
+    margin: 0 auto 0.75rem;
+    line-height: 1.55;
+    font-weight: 400;
+}
+
+/* ── Feature Grid (Landing) ────────────────────────────────────── */
+
+.feature-card {
+    background: linear-gradient(145deg, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.4));
+    border: 1px solid rgba(108, 92, 231, 0.12);
+    border-radius: 14px;
+    padding: 1.35rem 1.25rem 1.25rem;
+    min-height: 155px;
+    height: 100%;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.feature-card:hover {
+    border-color: rgba(108, 92, 231, 0.35);
+    box-shadow: 0 8px 32px rgba(108, 92, 231, 0.12);
+    transform: translateY(-2px);
+}
+
+.feature-icon {
+    font-size: 1.65rem;
+    line-height: 1;
+    margin-bottom: 0.65rem;
+}
+
+.feature-title {
+    font-size: 1.025rem;
+    font-weight: 700;
+    color: #FFFFFE;
+    margin-bottom: 0.45rem;
+    line-height: 1.25;
+}
+
+.feature-desc {
+    font-size: 0.85rem;
+    color: #94A3B8;
+    line-height: 1.55;
+    margin: 0;
+}
+
+/* ── Tech Stack Cards (Landing) ────────────────────────────────── */
+
+.tech-card {
+    background: linear-gradient(145deg, rgba(26, 26, 46, 0.9), rgba(26, 26, 46, 0.5));
+    border: 1px solid rgba(108, 92, 231, 0.12);
+    border-radius: 14px;
+    padding: 1.15rem 1rem;
+    text-align: center;
+    min-height: 115px;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.tech-card:hover {
+    border-color: rgba(108, 92, 231, 0.3);
+    box-shadow: 0 6px 24px rgba(108, 92, 231, 0.1);
+    transform: translateY(-2px);
+}
+
+.tech-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+    margin-bottom: 0.45rem;
+}
+
+.tech-name {
+    font-weight: 700;
+    color: #FFFFFE;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+}
+
+.tech-desc {
+    font-size: 0.78rem;
+    color: #94A3B8;
+    font-weight: 500;
+    line-height: 1.35;
+}
+
+/* ── Empty State ───────────────────────────────────────────────── */
+
+.empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #94A3B8;
+}
+
+.empty-state-icon {
+    font-size: 2.25rem;
+    margin-bottom: 0.6rem;
+    opacity: 0.6;
+}
+
+.empty-state-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #FFFFFE;
+    margin-bottom: 0.35rem;
+}
+
+.empty-state-desc {
+    font-size: 0.85rem;
+    color: #94A3B8;
+    max-width: 420px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+/* ── Section Headers ───────────────────────────────────────────── */
+
+.section-header {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #FFFFFE;
+    margin-top: 1.75rem;
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: -0.2px;
+}
+
+.section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(108, 92, 231, 0.25), transparent);
+    margin: 0.65rem 0 0.85rem 0;
+}
+
+/* ── Documentation Page ────────────────────────────────────────── */
+
+.doc-section {
+    background: linear-gradient(145deg, rgba(26, 26, 46, 0.7), rgba(26, 26, 46, 0.3));
+    border: 1px solid rgba(108, 92, 231, 0.1);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-top: 0.35rem;
+    margin-bottom: 0.75rem;
+}
+
+.doc-section h4 {
+    color: #a29bfe;
+    margin-bottom: 0.35rem;
+    font-size: 1.05rem;
+}
+
+/* ── Workspace Sub-Navigation ──────────────────────────────────── */
+
+.workspace-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: rgba(15, 14, 23, 0.5);
+    border-radius: 10px;
+    border: 1px solid rgba(108, 92, 231, 0.1);
+    margin-bottom: 0.75rem;
+}
+
+.workspace-tab {
+    padding: 6px 14px;
+    border-radius: 7px;
+    font-size: 0.825rem;
+    font-weight: 500;
+    color: #94A3B8;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    flex: 1;
+}
+
+.workspace-tab-active {
+    background: rgba(108, 92, 231, 0.2);
+    color: #a29bfe;
+    font-weight: 600;
+}
+
+/* ── Buttons ───────────────────────────────────────────────────── */
+
+.stButton > button {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-family: 'Inter', sans-serif !important;
+    transition: all 0.2s ease !important;
+    letter-spacing: 0.2px !important;
+    padding: 0.45rem 1rem !important;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(108, 92, 231, 0.3);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(108, 92, 231, 0.5);
+}
+
+/* ── Streamlit Tab Overrides ───────────────────────────────────── */
+
+.stTabs [data-baseweb="tab-list"] {
+    gap: 4px;
+    background: rgba(15, 14, 23, 0.5);
+    border-radius: 10px;
+    padding: 4px;
+    border: 1px solid rgba(108, 92, 231, 0.1);
+    margin-bottom: 0.75rem;
+}
+
+.stTabs [data-baseweb="tab"] {
+    border-radius: 7px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    color: #94A3B8;
+}
+
+.stTabs [aria-selected="true"] {
+    background: rgba(108, 92, 231, 0.2) !important;
+    color: #a29bfe !important;
+    font-weight: 600;
+}
+
+.stTabs [data-baseweb="tab-highlight"] {
+    display: none;
+}
+
+.stTabs [data-baseweb="tab-border"] {
+    display: none;
+}
+
+/* ── Info/Warning/Error Containers ──────────────────────────────── */
+
+.stAlert {
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+/* ── Footer ────────────────────────────────────────────────────── */
+
+.app-footer {
+    text-align: center;
+    padding: 1.25rem 0 0.75rem;
+    color: #64748B;
+    font-size: 0.75rem;
+    border-top: 1px solid rgba(108, 92, 231, 0.1);
+    margin-top: 2.25rem;
+}
+
+/* ── Sidebar Styling ───────────────────────────────────────────── */
+
+[data-testid="stSidebar"] {
+    background: #0B0A12 !important;
+    border-right: 1px solid rgba(108, 92, 231, 0.15) !important;
+}
+
+[data-testid="stSidebar"] > div:first-child {
+    padding-top: 1.5rem !important;
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
+}
+
+[data-testid="stSidebarNav"] {
+    display: none !important;
+}
