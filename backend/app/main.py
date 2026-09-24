@@ -20,6 +20,8 @@ from app.core.exceptions import (
     AllKeysCooldownError,
     DuplicateUserError,
     EntityNotFoundError,
+    InvalidOwnershipError,
+    InvalidStateError,
     MeetMindError,
     ProviderAuthError,
     ProviderExhaustedError,
@@ -60,8 +62,37 @@ async def lifespan(app: FastAPI):
     # 2. Initialize and start AsyncIOScheduler
     scheduler = AsyncIOScheduler()
     app.state.scheduler = scheduler
+
+    # Register thin scheduled deadline notification job (daily at 08:00 AM)
+    def scheduled_deadline_notification_job() -> None:
+        logger.info("APScheduler executing daily deadline notification job (08:00 AM).")
+        try:
+            from app.core.constants import NotificationTrigger
+            from app.db.session import SessionLocal
+            from app.services.notification_service import NotificationService
+
+            db = SessionLocal()
+            try:
+                NotificationService.process_deadline_notifications(
+                    db=db, trigger=NotificationTrigger.SCHEDULED
+                )
+            finally:
+                db.close()
+        except Exception as exc:
+            logger.error(f"Error executing scheduled deadline notification job: {exc}")
+
+    # Controlled registration: id + replace_existing prevents duplication across reloads
+    scheduler.add_job(
+        scheduled_deadline_notification_job,
+        trigger="cron",
+        hour=8,
+        minute=0,
+        id="daily_deadline_notification",
+        replace_existing=True,
+    )
+
     scheduler.start()
-    logger.info("APScheduler initialized and started.")
+    logger.info("APScheduler initialized, daily 08:00 notification job registered, and started.")
 
     logger.info("Application startup complete.")
     try:
@@ -110,10 +141,12 @@ async def meetmind_error_handler(request: Request, exc: MeetMindError) -> JSONRe
     Translates MeetMindError hierarchy into structured, secret-safe HTTP responses.
     Prevents leakage of raw credentials, stack traces, and internal secrets.
     """
-    if isinstance(exc, EntityNotFoundError):
+    if isinstance(exc, (EntityNotFoundError, InvalidOwnershipError)):
         status_code = status.HTTP_404_NOT_FOUND
     elif isinstance(exc, DuplicateUserError):
         status_code = status.HTTP_409_CONFLICT
+    elif isinstance(exc, InvalidStateError):
+        status_code = status.HTTP_400_BAD_REQUEST
     elif isinstance(exc, (ProviderRateLimitError, AllKeysCooldownError)):
         status_code = status.HTTP_429_TOO_MANY_REQUESTS
     elif isinstance(exc, ProviderAuthError):

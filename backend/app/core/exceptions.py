@@ -47,6 +47,14 @@ class DuplicateUserError(MeetMindError):
     """Raised when registering a user with an email that is already registered."""
 
 
+class InvalidOwnershipError(MeetMindError):
+    """Raised when a user attempts to access a resource belonging to another user or meeting."""
+
+
+class InvalidStateError(MeetMindError):
+    """Raised when an operation is invalid for the current resource or pipeline state."""
+
+
 # ── Pipeline & Agent Errors ──────────────────────────────────────────────────
 
 class PipelineError(MeetMindError):
