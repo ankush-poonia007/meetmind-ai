@@ -8,6 +8,10 @@ CORS middleware, health probes, global exception handling, and /api/v1 router ag
 from contextlib import asynccontextmanager
 from typing import Any
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from fastapi import Depends, FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware

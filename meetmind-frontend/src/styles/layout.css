@@ -1,0 +1,723 @@
+/* ==========================================================================
+   MeetMind AI — Shared Layout & Responsive Foundation (Section 5, 7, 13)
+   ========================================================================== */
+
+/* ── Application Layout Wrapper ──────────────────────────────────────────── */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+/* ── Fixed Sidebar Foundation ────────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px;
+  height: 100vh;
+  background-color: var(--color-sidebar-bg);
+  color: var(--color-sidebar-text);
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: width var(--transition-base);
+}
+
+/* ── Sidebar Brand Header & Logo ─────────────────────────────────────────── */
+.sidebar-header {
+  padding: var(--space-lg) var(--space-lg) var(--space-md);
+  display: flex;
+  align-items: center;
+}
+
+.sidebar-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--radius-sm);
+}
+
+.sidebar-logo-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+.sidebar-logo-text {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+/* ── Primary Navigation ──────────────────────────────────────────────────── */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 var(--space-sm);
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 10px 14px;
+  color: var(--color-sidebar-text);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid transparent;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.sidebar-link:hover {
+  background-color: var(--color-sidebar-hover);
+  color: #FFFFFF;
+}
+
+.sidebar-link.active {
+  border-left-color: var(--color-accent-primary);
+  color: #FFFFFF;
+  background-color: rgba(37, 99, 235, 0.12);
+}
+
+.sidebar-link-icon {
+  flex-shrink: 0;
+}
+
+/* ── Sidebar Section Divider ─────────────────────────────────────────────── */
+.sidebar-divider {
+  height: 1px;
+  background-color: var(--color-sidebar-border);
+  margin: var(--space-md) var(--space-md);
+}
+
+/* ── Workspace Sub-Navigation (Expanded on /workspace/*) ─────────────────── */
+.sidebar-workspace-nav {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: max-height var(--transition-base), opacity var(--transition-base), visibility var(--transition-base);
+}
+
+.sidebar-workspace-nav.is-expanded {
+  max-height: 260px;
+  opacity: 1;
+  visibility: visible;
+}
+
+.sidebar-workspace-nav-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 var(--space-sm);
+}
+
+.sidebar-section-title {
+  padding: 4px 14px 6px;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+/* ── Sidebar Footer ──────────────────────────────────────────────────────── */
+.sidebar-footer {
+  margin-top: auto;
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--color-sidebar-border);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.sidebar-version {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.sidebar-footer-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-sidebar-text);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  position: relative;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.sidebar-footer-link:hover {
+  color: #FFFFFF;
+}
+
+.sidebar-footer-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+/* ── Sidebar Collapsed Tooltips (Hidden by default on desktop) ───────────── */
+.sidebar-tooltip {
+  display: none;
+}
+
+/* ── Accessible Keyboard Focus Rings ─────────────────────────────────────── */
+.sidebar-link:focus-visible,
+.sidebar-logo:focus-visible,
+.sidebar-footer-link:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: -2px;
+}
+
+/* ── Main Content Area Foundation ────────────────────────────────────────── */
+.main-content {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  min-height: 100vh;
+  background-color: var(--color-bg-primary);
+  transition: margin-left var(--transition-base), width var(--transition-base);
+}
+
+/* ── Shared Centered Container (Section 7 Hero & Content Max-Width) ───────── */
+.container {
+  width: 100%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-lg);
+  padding-right: var(--space-lg);
+}
+
+/* ── Shared Content Section Spacing ──────────────────────────────────────── */
+.content-section {
+  padding: var(--space-xl) var(--space-lg);
+}
+
+/* ── Reusable Two-Column Grid ────────────────────────────────────────────── */
+.grid-2-col {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+/* ==========================================================================
+   Base UI Elements Foundation (Section 11)
+   ========================================================================== */
+
+/* ── Primary Button ──────────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-accent-primary);
+  color: #FFFFFF;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* ── Secondary Button (Outlined) ─────────────────────────────────────────── */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1.5px solid var(--color-border-dark);
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+/* ── Reusable Card Container ─────────────────────────────────────────────── */
+.card {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  padding: var(--space-lg);
+}
+
+/* ==========================================================================
+   Home Page Structural Layout (Section 7)
+   ========================================================================== */
+
+/* ── Section 1: Hero ─────────────────────────────────────────────────────── */
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-primary);
+  padding: var(--space-2xl) 0;
+  position: relative;
+}
+
+.hero-container {
+  display: flex;
+  align-items: center;
+}
+
+.hero-content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2xl);
+  width: 100%;
+}
+
+.hero-text-block {
+  flex: 1;
+  max-width: 580px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.hero-label {
+  color: var(--color-text-muted);
+}
+
+.hero-title {
+  margin: 0;
+}
+
+.hero-subtext {
+  color: var(--color-text-secondary);
+  max-width: 520px;
+}
+
+.hero-cta-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.hero-visual-block {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinning-text-wrapper {
+  width: 220px;
+  height: 220px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinning-text-svg {
+  width: 220px;
+  height: 220px;
+  overflow: visible;
+}
+
+.spinning-text-ring {
+  transform-origin: 110px 110px;
+}
+
+/* ── Section 2: Problem Statement ────────────────────────────────────────── */
+.problem-section {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-inverse);
+  padding: var(--space-3xl) 0;
+}
+
+.problem-content {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.problem-label {
+  color: var(--color-sidebar-text);
+}
+
+.problem-heading {
+  color: var(--color-text-inverse);
+  line-height: 1.15;
+}
+
+.problem-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  color: #D1D5DB;
+}
+
+/* ── Section 3: Feature Highlights ───────────────────────────────────────── */
+.features-section {
+  padding: var(--space-3xl) 0;
+  background-color: var(--color-bg-primary);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  background-color: var(--color-bg-secondary);
+}
+
+.feature-icon-wrapper {
+  color: var(--color-accent-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-accent-soft);
+  margin-bottom: var(--space-xs);
+}
+
+.feature-title {
+  color: var(--color-text-primary);
+}
+
+.feature-description {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ── Section 4: How It Works ─────────────────────────────────────────────── */
+.how-it-works-section {
+  padding: var(--space-3xl) 0;
+  background-color: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border);
+}
+
+.how-it-works-header {
+  margin-bottom: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.how-it-works-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.how-it-works-step {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2xl);
+  padding: var(--space-lg) 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.how-it-works-step.step-alternate {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.step-number {
+  font-family: var(--font-serif);
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 700;
+  color: var(--color-accent-primary);
+  line-height: 1;
+  min-width: 90px;
+  flex-shrink: 0;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.step-title {
+  color: var(--color-text-primary);
+}
+
+.step-description {
+  color: var(--color-text-secondary);
+}
+
+/* ── Section 5: Tech Highlight ───────────────────────────────────────────── */
+.tech-highlight-section {
+  background-color: var(--color-bg-dark);
+  color: var(--color-text-inverse);
+  padding: var(--space-3xl) 0;
+}
+
+.tech-highlight-header {
+  margin-bottom: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.tech-highlight-label {
+  color: var(--color-sidebar-text);
+}
+
+.tech-highlight-heading {
+  color: var(--color-text-inverse);
+}
+
+.tech-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+.tech-stat-block {
+  background-color: #1A1A1A;
+  border: 1px solid var(--color-sidebar-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.tech-stat-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text-inverse);
+  line-height: 1.3;
+}
+
+.tech-stat-desc {
+  font-size: 14px;
+  color: #9CA3AF;
+  line-height: 1.5;
+}
+
+/* ── Section 6: CTA Banner ───────────────────────────────────────────────── */
+.cta-banner-section {
+  padding: var(--space-3xl) 0;
+  background-color: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border);
+}
+
+.cta-banner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-xl);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cta-banner-heading {
+  margin: 0;
+}
+
+/* ==========================================================================
+   Responsive Foundation — Mobile & Tablet Boundary (Section 5 Line 248)
+   ========================================================================== */
+
+@media (max-width: 767px) {
+  /* ── Sidebar Collapse to Icons Only ─────────────────────────────────────── */
+  .sidebar {
+    width: 48px;
+    overflow: visible;
+  }
+
+  .sidebar-label {
+    display: none;
+  }
+
+  .sidebar-header {
+    padding: var(--space-md) 0;
+    justify-content: center;
+  }
+
+  .sidebar-logo {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .sidebar-nav {
+    padding: 0;
+    align-items: center;
+  }
+
+  .sidebar-link {
+    justify-content: center;
+    padding: 12px 0;
+    width: 100%;
+    border-left-width: 3px;
+    border-radius: 0;
+  }
+
+  .sidebar-divider {
+    margin: var(--space-sm) var(--space-xs);
+  }
+
+  .sidebar-workspace-nav-inner {
+    padding: 0;
+    align-items: center;
+  }
+
+  .sidebar-footer {
+    padding: var(--space-md) 0;
+    justify-content: center;
+  }
+
+  .sidebar-footer-links {
+    flex-direction: column;
+    gap: var(--space-xs);
+    align-items: center;
+  }
+
+  /* ── Collapsed Hover Tooltips ───────────────────────────────────────────── */
+  .sidebar-tooltip {
+    display: block;
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-4px);
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-inverse);
+    padding: 5px 10px;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-sidebar-border);
+    transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
+    z-index: 1000;
+  }
+
+  .sidebar-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -4px;
+    transform: translateY(-50%);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-right: 4px solid var(--color-sidebar-border);
+  }
+
+  .sidebar-link:hover .sidebar-tooltip,
+  .sidebar-link:focus-visible .sidebar-tooltip,
+  .sidebar-footer-link:hover .sidebar-tooltip,
+  .sidebar-footer-link:focus-visible .sidebar-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  /* ── Main Content Offset Adjustment ────────────────────────────────────── */
+  .main-content {
+    margin-left: 48px;
+    width: calc(100% - 48px);
+  }
+
+  /* ── Two-Column Grid Single-Column Stacking ────────────────────────────── */
+  .grid-2-col {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── Responsive Section Spacing ────────────────────────────────────────── */
+  .content-section {
+    padding: var(--space-lg) var(--space-md);
+  }
+
+  /* ── Home Page Mobile Layout Stacking ──────────────────────────────────── */
+  .hero-section {
+    min-height: auto;
+    padding: var(--space-2xl) 0;
+  }
+
+  .hero-content-wrapper {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-xl);
+  }
+
+  .hero-text-block {
+    align-items: center;
+  }
+
+  .hero-cta-group {
+    justify-content: center;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .how-it-works-step,
+  .how-it-works-step.step-alternate {
+    flex-direction: column;
+    text-align: left;
+    gap: var(--space-sm);
+  }
+
+  .tech-highlight-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   Accessibility — Reduced Motion Preferences
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .main-content,
+  .sidebar-workspace-nav,
+  .sidebar-tooltip {
+    transition: none !important;
+  }
+}

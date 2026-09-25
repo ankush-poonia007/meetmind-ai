@@ -1,0 +1,72 @@
+/* ==========================================================================
+   MeetMind AI — Design Tokens (Section 3 & Section 4)
+   ========================================================================== */
+
+:root {
+  /* ── Background Colors ─────────────────────────────────────────────────── */
+  --color-bg-primary: #F7F4EE;        /* cream — main page background */
+  --color-bg-secondary: #EDEAE2;      /* slightly darker cream — card bg */
+  --color-bg-dark: #111111;           /* near black — contrast sections */
+  --color-bg-workspace: #F0EDE6;      /* workspace background */
+
+  /* ── Text Colors ───────────────────────────────────────────────────────── */
+  --color-text-primary: #1A1A1A;      /* near black — headings */
+  --color-text-secondary: #4A4A4A;    /* dark grey — body text */
+  --color-text-muted: #888888;        /* light grey — captions, labels */
+  --color-text-inverse: #F7F4EE;      /* cream — text on dark bg */
+
+  /* ── Accent Colors ─────────────────────────────────────────────────────── */
+  --color-accent-primary: #2563EB;    /* blue — primary CTA, active states */
+  --color-accent-dark: #1E40AF;       /* dark blue — hover states */
+  --color-accent-light: #DBEAFE;      /* light blue — subtle highlights */
+  --color-accent-soft: #EFF6FF;       /* very light blue — bg tints */
+
+  /* ── Status Colors ─────────────────────────────────────────────────────── */
+  --color-status-high: #DC2626;       /* red — high priority */
+  --color-status-medium: #D97706;     /* amber — medium priority */
+  --color-status-low: #16A34A;        /* green — low priority */
+  --color-status-complete: #6B7280;   /* grey — completed tasks */
+  --color-status-pending: #2563EB;    /* blue — pending tasks */
+  --color-status-expired: #991B1B;    /* dark red — expired tasks */
+
+  /* ── Border Colors ─────────────────────────────────────────────────────── */
+  --color-border: #E2DDD6;            /* subtle border */
+  --color-border-dark: #C8C2B8;       /* stronger border */
+
+  /* ── Sidebar Colors ────────────────────────────────────────────────────── */
+  --color-sidebar-bg: #1A1A1A;        /* dark sidebar */
+  --color-sidebar-text: #D1D5DB;      /* light grey sidebar text */
+  --color-sidebar-active: #2563EB;    /* blue active link */
+  --color-sidebar-hover: #2A2A2A;     /* subtle hover */
+  --color-sidebar-border: #2A2A2A;    /* sidebar section divider */
+
+  /* ── Shadows ───────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-hover: 0 8px 32px rgba(37, 99, 235, 0.15);
+
+  /* ── Spacing Scale ─────────────────────────────────────────────────────── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+
+  /* ── Border Radius ─────────────────────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 9999px;
+
+  /* ── Transitions ───────────────────────────────────────────────────────── */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* ── Font Stacks ───────────────────────────────────────────────────────── */
+  --font-serif: 'Playfair Display', Georgia, serif;   /* headings */
+  --font-sans: 'Inter', system-ui, sans-serif;         /* body, UI */
+}
