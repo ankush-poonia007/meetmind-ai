@@ -12,7 +12,7 @@ import asyncio
 import sys
 import unittest
 import uuid
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -405,12 +405,12 @@ class TestQANotificationIntegration(BaseBatch4TestCase):
         self, mock_rag: MagicMock, mock_deliver: MagicMock, mock_compose: MagicMock
     ) -> None:
         """Verifies alert_sent is updated to True only upon successful delivery."""
-        today = date.today()
+        now = datetime.now(timezone.utc)
         task = Task(
             meeting_id=self.meeting.id,
             user_id=self.user.id,
             title="Urgent Alert Task",
-            deadline=today,
+            deadline=now + timedelta(hours=2),
             status=DBTaskStatus.pending,
             alert_sent=False,
         )

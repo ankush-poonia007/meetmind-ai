@@ -668,23 +668,23 @@ class TestNotificationService(BaseServiceTestCase):
         self.meeting = self.create_sample_meeting(self.user)
 
     def test_get_pending_alerts_selection(self) -> None:
-        today = date.today()
+        now = datetime.now(timezone.utc)
 
-        # Task 1: Due today, alert_sent=False -> QUALIFIES
+        # Task 1: Due in 2 hours, alert_sent=False -> QUALIFIES
         t1 = Task(
             meeting_id=self.meeting.id,
             user_id=self.user.id,
-            title="Due Today Task",
-            deadline=today,
+            title="Due Soon Task",
+            deadline=now + timedelta(hours=2),
             status=DBTaskStatus.pending,
             alert_sent=False,
         )
-        # Task 2: Due tomorrow, alert_sent=False -> QUALIFIES
+        # Task 2: Due in 12 hours, alert_sent=False -> QUALIFIES
         t2 = Task(
             meeting_id=self.meeting.id,
             user_id=self.user.id,
-            title="Due Tomorrow Task",
-            deadline=today + timedelta(days=1),
+            title="Due Later Task",
+            deadline=now + timedelta(hours=12),
             status=DBTaskStatus.pending,
             alert_sent=False,
         )
@@ -692,17 +692,17 @@ class TestNotificationService(BaseServiceTestCase):
         t3 = Task(
             meeting_id=self.meeting.id,
             user_id=self.user.id,
-            title="Due Later Task",
-            deadline=today + timedelta(days=5),
+            title="Due in 5 Days Task",
+            deadline=now + timedelta(days=5),
             status=DBTaskStatus.pending,
             alert_sent=False,
         )
-        # Task 4: Due today, but alert_sent=True -> DOES NOT QUALIFY
+        # Task 4: Due in 2 hours, but alert_sent=True -> DOES NOT QUALIFY
         t4 = Task(
             meeting_id=self.meeting.id,
             user_id=self.user.id,
             title="Already Alerted",
-            deadline=today,
+            deadline=now + timedelta(hours=2),
             status=DBTaskStatus.pending,
             alert_sent=True,
         )
@@ -711,7 +711,7 @@ class TestNotificationService(BaseServiceTestCase):
             meeting_id=self.meeting.id,
             user_id=self.user.id,
             title="Completed Task",
-            deadline=today,
+            deadline=now + timedelta(hours=2),
             status=DBTaskStatus.complete,
             alert_sent=False,
         )
@@ -721,18 +721,18 @@ class TestNotificationService(BaseServiceTestCase):
         alerts = NotificationService.get_pending_alerts_for_user(self.db, self.user.id)
         self.assertEqual(len(alerts), 2)
         titles = [a.title for a in alerts]
-        self.assertIn("Due Today Task", titles)
-        self.assertIn("Due Tomorrow Task", titles)
+        self.assertIn("Due Soon Task", titles)
+        self.assertIn("Due Later Task", titles)
 
     @patch("app.services.notification_service.NotificationService._deliver_email", return_value=True)
     @patch("app.services.notification_service.NotificationService._retrieve_task_context", return_value="Sample context")
     def test_process_deadline_notifications_success(self, mock_rag, mock_email) -> None:
-        today = date.today()
+        now = datetime.now(timezone.utc)
         task = Task(
             meeting_id=self.meeting.id,
             user_id=self.user.id,
             title="Urgent Task",
-            deadline=today,
+            deadline=now + timedelta(hours=2),
             status=DBTaskStatus.pending,
             alert_sent=False,
         )
@@ -754,12 +754,12 @@ class TestNotificationService(BaseServiceTestCase):
     @patch("app.services.notification_service.NotificationService._retrieve_task_context", return_value="")
     @patch("app.services.notification_service.NotificationService._deliver_email", return_value=False)
     def test_process_deadline_notifications_delivery_failure(self, mock_email, mock_rag) -> None:
-        today = date.today()
+        now = datetime.now(timezone.utc)
         task = Task(
             meeting_id=self.meeting.id,
             user_id=self.user.id,
             title="Failing Alert Task",
-            deadline=today,
+            deadline=now + timedelta(hours=2),
             status=DBTaskStatus.pending,
             alert_sent=False,
         )

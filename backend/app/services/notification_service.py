@@ -57,8 +57,8 @@ class NotificationService:
                 details={"user_id": str(user_id)},
             )
 
-        today = date.today()
-        deadline_threshold = today + timedelta(days=1)
+        now = datetime.now(timezone.utc)
+        deadline_threshold = now + timedelta(hours=24)
 
         tasks = (
             db.query(Task)
@@ -67,15 +67,18 @@ class NotificationService:
                 Task.status == DBTaskStatus.pending,
                 Task.alert_sent.is_(False),
                 Task.deadline.isnot(None),
+                Task.deadline > now,
                 Task.deadline <= deadline_threshold,
             )
             .order_by(Task.deadline.asc())
             .all()
         )
 
+        today = now.date()
         results: list[PendingAlertResponse] = []
         for t in tasks:
-            days_until = (t.deadline - today).days if t.deadline else None
+            t_date = t.deadline.date() if isinstance(t.deadline, datetime) else t.deadline
+            days_until = (t_date - today).days if t_date else None
             results.append(
                 PendingAlertResponse(
                     task_id=t.id,
@@ -172,7 +175,7 @@ class NotificationService:
             import resend
             resend.api_key = settings.resend_api_key
             params = {
-                "from": settings.resend_sender or "onboarding@resend.dev",
+                "from": settings.resend_sender or "MeetMind <onboarding@resend.dev>",
                 "to": [recipient_email],
                 "subject": subject,
                 "text": body,

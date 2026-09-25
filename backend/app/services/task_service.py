@@ -18,6 +18,7 @@ from app.core.exceptions import (
     UserNotFoundError,
 )
 from app.core.logging import get_logger
+from app.core.utils import parse_filter_bound
 from app.db.models.meeting import Meeting
 from app.db.models.task import Task, TaskPriority as DBTaskPriority, TaskStatus as DBTaskStatus
 from app.db.models.user import User
@@ -89,10 +90,15 @@ class TaskService:
                 query = query.filter(Task.priority == prio_val)
 
             if filter_params.deadline_before is not None:
-                query = query.filter(Task.deadline <= filter_params.deadline_before)
+                op_str, bound_dt = parse_filter_bound(filter_params.deadline_before, is_upper=True)
+                if op_str == "<":
+                    query = query.filter(Task.deadline < bound_dt)
+                else:
+                    query = query.filter(Task.deadline <= bound_dt)
 
             if filter_params.deadline_after is not None:
-                query = query.filter(Task.deadline >= filter_params.deadline_after)
+                _, bound_dt = parse_filter_bound(filter_params.deadline_after, is_upper=False)
+                query = query.filter(Task.deadline >= bound_dt)
 
         # Default ordering: deadline + priority
         tasks = query.order_by(

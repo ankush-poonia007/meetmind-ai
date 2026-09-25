@@ -81,52 +81,52 @@ class ChatService:
                 details={"user_id": str(chat_request.user_id)},
             )
 
-        # 1. Persist user message
-        user_msg = ChatMessage(
-            meeting_id=meeting_id,
-            user_id=chat_request.user_id,
-            role=DBChatRole.user,
-            content=chat_request.question.strip(),
-        )
-        db.add(user_msg)
-
-        # Lookup participant details for Q&A context
-        participant = (
-            db.query(MeetingParticipant)
-            .filter(
-                MeetingParticipant.meeting_id == meeting_id,
-                MeetingParticipant.is_current_user.is_(True),
-            )
-            .first()
-        )
-        user_name = participant.name if participant else user.name
-        user_role = participant.role if participant else None
-
-        # 2. Delegate Q&A execution to agent pipeline boundary
-        answer, sources, confidence = ChatService._invoke_qa_pipeline(
-            db=db,
-            meeting=meeting,
-            user=user,
-            question=chat_request.question.strip(),
-            user_name=user_name,
-            user_role=user_role,
-        )
-
-        # 3. Persist assistant response
-        assistant_msg = ChatMessage(
-            meeting_id=meeting_id,
-            user_id=chat_request.user_id,
-            role=DBChatRole.assistant,
-            content=answer,
-        )
-        db.add(assistant_msg)
-
         try:
+            # 1. Persist user message
+            user_msg = ChatMessage(
+                meeting_id=meeting_id,
+                user_id=chat_request.user_id,
+                role=DBChatRole.user,
+                content=chat_request.question.strip(),
+            )
+            db.add(user_msg)
+
+            # Lookup participant details for Q&A context
+            participant = (
+                db.query(MeetingParticipant)
+                .filter(
+                    MeetingParticipant.meeting_id == meeting_id,
+                    MeetingParticipant.is_current_user.is_(True),
+                )
+                .first()
+            )
+            user_name = participant.name if participant else user.name
+            user_role = participant.role if participant else None
+
+            # 2. Delegate Q&A execution to agent pipeline boundary
+            answer, sources, confidence = ChatService._invoke_qa_pipeline(
+                db=db,
+                meeting=meeting,
+                user=user,
+                question=chat_request.question.strip(),
+                user_name=user_name,
+                user_role=user_role,
+            )
+
+            # 3. Persist assistant response
+            assistant_msg = ChatMessage(
+                meeting_id=meeting_id,
+                user_id=chat_request.user_id,
+                role=DBChatRole.assistant,
+                content=answer,
+            )
+            db.add(assistant_msg)
+
             db.commit()
             logger.info(f"Chat exchange persisted for meeting {meeting_id}")
         except Exception as exc:
             db.rollback()
-            logger.error(f"Error persisting chat exchange: {exc}")
+            logger.error(f"Error during chat exchange for meeting {meeting_id}: {exc}")
             raise
 
         return ChatResponse(

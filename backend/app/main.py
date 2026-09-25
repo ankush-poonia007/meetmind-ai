@@ -85,8 +85,8 @@ async def lifespan(app: FastAPI):
     scheduler.add_job(
         scheduled_deadline_notification_job,
         trigger="cron",
-        hour=8,
-        minute=0,
+        hour=settings.notification_hour,
+        minute=settings.notification_minute,
         id="daily_deadline_notification",
         replace_existing=True,
     )

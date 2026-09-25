@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     """
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", "backend/.env"),
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",          # tolerate variables not declared here
@@ -80,7 +80,7 @@ class Settings(BaseSettings):
 
     # ── Resend Email ───────────────────────────────────────────────────────
     resend_api_key: str = ""
-    resend_sender: str = "onboarding@resend.dev"
+    resend_sender: str = "MeetMind <onboarding@resend.dev>"
 
     # ── Notification Scheduler ─────────────────────────────────────────────
     notification_hour: int = 8

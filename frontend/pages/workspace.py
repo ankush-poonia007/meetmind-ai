@@ -364,8 +364,8 @@ def _render_meeting_detail_view(meeting_id: str, user_id: str) -> None:
         st.markdown('<div class="section-header" style="font-size:1.1rem;">🎯 Meeting Tasks</div>', unsafe_allow_html=True)
         tasks = _fetch_meeting_tasks(user_id, meeting_id)
         if tasks:
-            for t in tasks:
-                render_task_card(t)
+            for idx, t in enumerate(tasks):
+                render_task_card(t, key_prefix=f"meeting_{meeting_id}", index=idx)
         else:
             st.caption("No confirmed tasks for this meeting yet.")
 
@@ -462,8 +462,8 @@ def _render_tasks_tab() -> None:
             description="No tasks match the active filter criteria. Try adjusting the status or priority filters.",
         )
     else:
-        for task in tasks:
-            render_task_card(task)
+        for idx, task in enumerate(tasks):
+            render_task_card(task, key_prefix="tasks_tab", index=idx)
 
 
 # ── Page Dispatcher ──────────────────────────────────────────────────────────

@@ -8,10 +8,11 @@ Supports deadline monitoring, priority filtering, and alert state tracking.
 import enum
 import uuid
 from datetime import date, datetime
+from typing import Any
 
 from sqlalchemy import Boolean, Date, Enum, ForeignKey, Index, String, Text, func
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from sqlalchemy.types import DateTime
 
 from app.db.base import Base
@@ -72,7 +73,17 @@ class Task(Base):
     )
 
     # MUST be nullable — Extraction Agent may not find a deadline.
-    deadline: Mapped[date | None] = mapped_column(Date, nullable=True)
+    deadline: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    @validates("deadline")
+    def validate_deadline(self, key: str, value: Any) -> Any:
+        from app.core.utils import normalize_deadline
+        return normalize_deadline(value)
+
+    @property
+    def due_at(self) -> datetime | None:
+        """Alias for deadline to support due_at property references."""
+        return self.deadline
 
     status: Mapped[TaskStatus] = mapped_column(
         Enum(TaskStatus, name="task_status", create_type=True),

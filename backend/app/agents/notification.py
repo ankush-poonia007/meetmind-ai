@@ -43,8 +43,8 @@ class NotificationAgent:
         Queries PostgreSQL for all pending tasks due within the next 24 hours
         (or already overdue) that have not yet had an alert sent.
         """
-        today = date.today()
-        deadline_threshold = today + timedelta(days=1)
+        now = datetime.now(timezone.utc)
+        deadline_threshold = now + timedelta(hours=24)
 
         return (
             db.query(Task)
@@ -52,6 +52,7 @@ class NotificationAgent:
                 Task.status == DBTaskStatus.pending,
                 Task.alert_sent.is_(False),
                 Task.deadline.isnot(None),
+                Task.deadline > now,
                 Task.deadline <= deadline_threshold,
             )
             .order_by(Task.deadline.asc())
