@@ -6,8 +6,8 @@ Orders routes carefully to prevent route precedence conflicts.
 Delegates entirely to TaskService.
 """
 
-from datetime import date
-from typing import Optional
+from datetime import date, datetime
+from typing import Optional, Union
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, status
@@ -34,8 +34,8 @@ def filter_user_tasks(
     user_id: UUID,
     priority: Optional[TaskPriority] = Query(None, description="Filter by priority: high, medium, low"),
     task_status: Optional[TaskStatus] = Query(None, alias="status", description="Filter by status: pending or complete"),
-    deadline_before: Optional[date] = Query(None, description="Tasks due on or before date"),
-    deadline_after: Optional[date] = Query(None, description="Tasks due on or after date"),
+    deadline_before: Optional[Union[date, datetime]] = Query(None, description="Tasks due on or before date or timestamp"),
+    deadline_after: Optional[Union[date, datetime]] = Query(None, description="Tasks due on or after date or timestamp"),
     db: Session = Depends(get_db),
 ) -> list[TaskResponse]:
     """Filters tasks for a user according to query parameters."""

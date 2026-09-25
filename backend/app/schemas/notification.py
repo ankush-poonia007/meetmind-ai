@@ -6,7 +6,7 @@ and notification execution summaries.
 """
 
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, Union
 from uuid import UUID
 
 from pydantic import BaseModel, Field
@@ -28,7 +28,7 @@ class PendingAlertResponse(BaseModel):
     meeting_id: UUID = Field(..., description="Associated meeting identifier")
     user_id: UUID = Field(..., description="Assigned user identifier")
     title: str = Field(..., description="Task title")
-    deadline: Optional[date] = Field(None, description="Task deadline")
+    deadline: Optional[Union[datetime, date]] = Field(None, description="Task deadline")
     days_until_due: Optional[int] = Field(None, description="Days remaining until deadline")
 
 

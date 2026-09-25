@@ -144,8 +144,12 @@ def render_meeting_chat(meeting_id: str, user_id: str) -> None:
                 st.rerun()
 
             except APIError as exc:
+                if st.session_state[chat_key] and st.session_state[chat_key][-1].get("role") == "user":
+                    st.session_state[chat_key].pop()
                 st.error(f"Failed to get answer: {exc.message}")
             except Exception as exc:
+                if st.session_state[chat_key] and st.session_state[chat_key][-1].get("role") == "user":
+                    st.session_state[chat_key].pop()
                 st.error(f"Unexpected error: {exc}")
 
     # Clear History action

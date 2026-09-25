@@ -14,6 +14,8 @@ from services.api_client import APIError, api
 def render_task_card(
     task: dict[str, Any],
     on_status_change: Optional[Callable[[str, str], None]] = None,
+    key_prefix: str = "",
+    index: Optional[int] = None,
 ) -> None:
     """
     Renders a task item with interactive status toggle.
@@ -21,8 +23,10 @@ def render_task_card(
     Args:
         task: Task data dictionary from API.
         on_status_change: Optional callback when task status toggles.
+        key_prefix: Optional prefix for the toggle button key to prevent collisions across tabs/views.
+        index: Optional sequence index for uniqueness when multiple cards are rendered.
     """
-    task_id = str(task.get("id"))
+    task_id = str(task.get("id") or "unknown")
     title = task.get("title", "Untitled Task")
     description = task.get("description") or ""
     priority = (task.get("priority") or "medium").lower()
@@ -64,7 +68,16 @@ def render_task_card(
         toggle_label = "↩️ Mark Pending" if is_complete else "✅ Mark Complete"
         new_status = "pending" if is_complete else "complete"
 
-        if st.button(toggle_label, key=f"toggle_task_{task_id}", use_container_width=True):
+        key_parts = []
+        if key_prefix:
+            key_parts.append(str(key_prefix))
+        key_parts.append("toggle_task")
+        key_parts.append(task_id)
+        if index is not None:
+            key_parts.append(str(index))
+        btn_key = "_".join(key_parts)
+
+        if st.button(toggle_label, key=btn_key, use_container_width=True):
             try:
                 api.put(f"/tasks/{task_id}/status", json={"status": new_status})
                 st.success(f"Task marked as {new_status}.")

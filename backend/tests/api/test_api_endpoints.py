@@ -35,7 +35,7 @@ Validates all 21 HTTP endpoint contracts across the 7 domain routers:
 import sys
 import unittest
 import uuid
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -469,11 +469,12 @@ class TestNotificationsRouter(BaseAPITestCase):
     @patch("app.services.notification_service.NotificationService._retrieve_task_context", return_value="")
     @patch("app.services.notification_service.NotificationService._deliver_email", return_value=True)
     def test_22_trigger_notifications(self, mock_email, mock_rag) -> None:
+        now = datetime.now(timezone.utc)
         task = Task(
             meeting_id=self.meeting.id,
             user_id=self.user.id,
             title="Pending Alert",
-            deadline=date.today(),
+            deadline=now + timedelta(hours=2),
             status=DBTaskStatus.pending,
             alert_sent=False,
         )
@@ -487,11 +488,12 @@ class TestNotificationsRouter(BaseAPITestCase):
         self.assertEqual(data["alerts_sent"], 1)
 
     def test_23_get_pending_notifications(self) -> None:
+        now = datetime.now(timezone.utc)
         task = Task(
             meeting_id=self.meeting.id,
             user_id=self.user.id,
             title="Pending Alert Due Today",
-            deadline=date.today(),
+            deadline=now + timedelta(hours=2),
             status=DBTaskStatus.pending,
             alert_sent=False,
         )
