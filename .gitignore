@@ -58,3 +58,7 @@ htmlcov/
 
 # ── Streamlit ──────────────────────────────────────────────
 .streamlit/secrets.toml
+
+# ── Files ──────────────────────────────────────────────────
+BATCH_6_LEGACY_DEADLINE_DATA_AUDIT_REPORT.md
+GATE_4_ANALYSIS.md
