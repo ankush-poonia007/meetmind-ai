@@ -86,11 +86,39 @@ class Settings(BaseSettings):
     notification_hour: int = 8
     notification_minute: int = 0
 
+    # ── JWT Authentication Configuration (Batch 4.4 Foundation) ────────────
+    jwt_secret_key: str = Field(
+        default="meetmind-dev-jwt-secret-key-at-least-32-chars-long!",
+        description="Secret key for signing and verifying JWT tokens",
+    )
+    jwt_algorithm: str = Field(
+        default="HS256",
+        description="JWT cryptographic signing algorithm",
+    )
+    jwt_access_token_expire_minutes: int = Field(
+        default=1440,
+        description="JWT access token lifetime in minutes (default 24h)",
+    )
+
     # ── App ────────────────────────────────────────────────────────────────
     app_env: str = "development"
     debug: bool = False
 
+    def validate_security_configuration(self) -> None:
+        """Fails safely if security configuration is missing or invalid in production."""
+        if self.app_env == "production":
+            if (
+                not self.jwt_secret_key
+                or "dev-jwt-secret" in self.jwt_secret_key
+                or len(self.jwt_secret_key) < 32
+            ):
+                raise ValueError(
+                    "Production configuration error: JWT_SECRET_KEY must be explicitly configured "
+                    "with a secure key of at least 32 characters."
+                )
+
     # ── Provider Credential Extraction ─────────────────────────────────────
+
 
     def get_gemini_keys(self) -> list[str]:
         """

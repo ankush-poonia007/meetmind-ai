@@ -13,9 +13,11 @@ from app.db.models.meeting_participant import MeetingParticipant
 from app.db.models.task import Task, TaskPriority, TaskStatus
 from app.db.models.transcript_chunk import TranscriptChunk, TranscriptChunkType
 from app.db.models.user import User
+from app.db.models.user_credentials import UserCredentials
 
 __all__ = [
     "User",
+    "UserCredentials",
     "Meeting",
     "MeetingParticipant",
     "Task",
@@ -27,3 +29,4 @@ __all__ = [
     "TranscriptChunk",
     "TranscriptChunkType",
 ]
+

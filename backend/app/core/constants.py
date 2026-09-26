@@ -141,3 +141,4 @@ class FailureClass(str, Enum):
     TIMEOUT = "timeout"
     CONNECTION_FAILED = "connection_failed"
     UNKNOWN = "unknown"
+

@@ -55,6 +55,24 @@ class InvalidStateError(MeetMindError):
     """Raised when an operation is invalid for the current resource or pipeline state."""
 
 
+# ── Authentication & Security Errors (Batch 4.5) ─────────────────────────────
+
+class AuthenticationError(MeetMindError):
+    """Base exception for all authentication and security token failures."""
+
+
+class InvalidCredentialsError(AuthenticationError):
+    """Raised when authentication credentials (email/password) are incorrect or missing."""
+
+
+class InvalidTokenError(AuthenticationError):
+    """Raised when a JWT access token is malformed, has an invalid signature, or missing claims."""
+
+
+class TokenExpiredError(InvalidTokenError):
+    """Raised when a JWT access token has expired."""
+
+
 # ── Pipeline & Agent Errors ──────────────────────────────────────────────────
 
 class PipelineError(MeetMindError):

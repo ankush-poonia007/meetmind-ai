@@ -28,7 +28,15 @@ class User(Base):
     )
 
     # ── Columns ────────────────────────────────────────────────────────────
+    # name is preserved for full backward compatibility
     name: Mapped[str] = mapped_column(String, nullable=False)
+
+    # Added in Batch 4.4 for authentication & registration
+    first_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
+    last_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
+    mobile_number: Mapped[str | None] = mapped_column(String(25), nullable=True, index=True)
 
     email: Mapped[str] = mapped_column(String, nullable=False, unique=True, index=True)
 
@@ -39,6 +47,14 @@ class User(Base):
     )
 
     # ── Relationships ──────────────────────────────────────────────────────
+    credentials: Mapped["UserCredentials | None"] = relationship(  # noqa: F821
+        "UserCredentials",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+        lazy="select",
+    )
+
     meetings: Mapped[list["Meeting"]] = relationship(  # noqa: F821
         "Meeting",
         back_populates="user",
@@ -65,3 +81,4 @@ class User(Base):
 
     def __repr__(self) -> str:
         return f"<User id={self.id!s} email={self.email!r}>"
+

@@ -22,16 +22,20 @@ from sqlalchemy.orm import Session
 from app.api.router import api_router
 from app.core.exceptions import (
     AllKeysCooldownError,
+    AuthenticationError,
     DuplicateUserError,
     EntityNotFoundError,
+    InvalidCredentialsError,
     InvalidOwnershipError,
     InvalidStateError,
+    InvalidTokenError,
     MeetMindError,
     ProviderAuthError,
     ProviderExhaustedError,
     ProviderKeyFailoverExhaustedError,
     ProviderNotConfiguredError,
     ProviderRateLimitError,
+    TokenExpiredError,
 )
 from app.core.logging import get_logger
 from app.core.providers import get_provider_gateway
@@ -145,10 +149,22 @@ async def meetmind_error_handler(request: Request, exc: MeetMindError) -> JSONRe
     Translates MeetMindError hierarchy into structured, secret-safe HTTP responses.
     Prevents leakage of raw credentials, stack traces, and internal secrets.
     """
+    headers: dict[str, str] = {}
     if isinstance(exc, (EntityNotFoundError, InvalidOwnershipError)):
         status_code = status.HTTP_404_NOT_FOUND
     elif isinstance(exc, DuplicateUserError):
         status_code = status.HTTP_409_CONFLICT
+    elif isinstance(exc, InvalidCredentialsError):
+        status_code = status.HTTP_401_UNAUTHORIZED
+    elif isinstance(exc, TokenExpiredError):
+        status_code = status.HTTP_401_UNAUTHORIZED
+        headers["WWW-Authenticate"] = 'Bearer error="invalid_token", error_description="The access token has expired"'
+    elif isinstance(exc, InvalidTokenError):
+        status_code = status.HTTP_401_UNAUTHORIZED
+        headers["WWW-Authenticate"] = 'Bearer error="invalid_token", error_description="Invalid or missing access token"'
+    elif isinstance(exc, AuthenticationError):
+        status_code = status.HTTP_401_UNAUTHORIZED
+        headers["WWW-Authenticate"] = "Bearer"
     elif isinstance(exc, InvalidStateError):
         status_code = status.HTTP_400_BAD_REQUEST
     elif isinstance(exc, (ProviderRateLimitError, AllKeysCooldownError)):
@@ -174,6 +190,7 @@ async def meetmind_error_handler(request: Request, exc: MeetMindError) -> JSONRe
 
     return JSONResponse(
         status_code=status_code,
+        headers=headers if headers else None,
         content={
             "error": exc.__class__.__name__,
             "message": exc.message,

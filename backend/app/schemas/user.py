@@ -17,6 +17,9 @@ EMAIL_REGEX = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
 class UserBase(BaseModel):
     """Shared user attributes."""
     name: str = Field(..., min_length=1, max_length=255, description="Full name of the user")
+    first_name: Optional[str] = Field(None, max_length=100, description="User's first name")
+    last_name: Optional[str] = Field(None, max_length=100, description="User's last name")
+    mobile_number: Optional[str] = Field(None, max_length=25, description="User's mobile number")
     email: str = Field(
         ...,
         min_length=3,
@@ -33,7 +36,10 @@ class UserCreate(UserBase):
 
 class UserUpdate(BaseModel):
     """Payload for updating user profile (PUT /api/v1/users/{user_id})."""
-    name: Optional[str] = Field(None, min_length=1, max_length=255, description="Updated name")
+    name: Optional[str] = Field(None, min_length=1, max_length=255, description="Updated full name")
+    first_name: Optional[str] = Field(None, max_length=100, description="Updated first name")
+    last_name: Optional[str] = Field(None, max_length=100, description="Updated last name")
+    mobile_number: Optional[str] = Field(None, max_length=25, description="Updated mobile number")
     email: Optional[str] = Field(
         None,
         min_length=3,
@@ -41,6 +47,7 @@ class UserUpdate(BaseModel):
         pattern=EMAIL_REGEX,
         description="Updated email address",
     )
+
 
 
 class UserResponse(UserBase):

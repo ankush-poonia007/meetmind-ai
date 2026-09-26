@@ -35,8 +35,14 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # ── Load DATABASE_URL from environment ────────────────────────────────────
-# Priority: ALEMBIC_DATABASE_URL (CI override) → DATABASE_URL (application env)
-database_url = os.environ.get("ALEMBIC_DATABASE_URL") or os.environ.get("DATABASE_URL")
+# Priority: ALEMBIC_DATABASE_URL (CI override) → DATABASE_URL (application env) → settings.database_url
+from app.core.settings import settings  # noqa: E402
+
+database_url = (
+    os.environ.get("ALEMBIC_DATABASE_URL")
+    or os.environ.get("DATABASE_URL")
+    or settings.database_url
+)
 if not database_url:
     raise RuntimeError(
         "DATABASE_URL environment variable is not set. "
