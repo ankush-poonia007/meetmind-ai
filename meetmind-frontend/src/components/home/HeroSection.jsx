@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import SpinningText from './SpinningText';
+import { useAuth } from '../../hooks/useAuth';
+import { useAuthModal } from '../../context/AuthModalContext';
 
 /**
  * HeroSection — Home Page Section 1 (Section 7)
@@ -12,6 +14,16 @@ import SpinningText from './SpinningText';
  * - Circular spinning text SVG badge with MeetMind mark
  */
 function HeroSection() {
+  const { isAuthenticated } = useAuth();
+  const { openAuthModal } = useAuthModal();
+
+  const handleWorkspaceClick = (e) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      openAuthModal('login');
+    }
+  };
+
   return (
     <section className="hero-section" id="hero" aria-labelledby="hero-heading">
       <div className="container hero-container">
@@ -26,7 +38,11 @@ function HeroSection() {
               extracts your tasks, and answers your questions — automatically.
             </p>
             <div className="hero-cta-group">
-              <Link to="/workspace/dashboard" className="btn-primary">
+              <Link
+                to="/workspace/dashboard"
+                className="btn-primary"
+                onClick={handleWorkspaceClick}
+              >
                 Open Workspace
               </Link>
               <Link to="/docs" className="btn-secondary">

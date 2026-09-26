@@ -10,8 +10,9 @@ import { NavLink } from 'react-router-dom';
  * @param {React.ComponentType} icon - Lucide icon component
  * @param {boolean} [end=false] - Whether to match route strictly at end
  * @param {number} [tabIndex=0] - Keyboard navigation tabindex control
+ * @param {Function} [onClick] - Optional click handler
  */
-function SidebarLink({ to, label, icon: Icon, end = false, tabIndex = 0 }) {
+function SidebarLink({ to, label, icon: Icon, end = false, tabIndex = 0, onClick }) {
   return (
     <NavLink
       to={to}
@@ -19,6 +20,7 @@ function SidebarLink({ to, label, icon: Icon, end = false, tabIndex = 0 }) {
       tabIndex={tabIndex}
       title={label}
       aria-label={label}
+      onClick={onClick}
       className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
     >
       {Icon && <Icon className="sidebar-link-icon" size={20} aria-hidden="true" />}

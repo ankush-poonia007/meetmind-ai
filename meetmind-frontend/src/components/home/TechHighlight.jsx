@@ -1,24 +1,29 @@
+import { Bot, Layers, Activity } from 'lucide-react';
+
 /**
  * TechHighlight — Home Page Section 5 (Section 7)
- * Dark contrast background section highlighting AI engineering architecture:
- * 3 horizontal stat blocks:
- * 1. 7 Specialized Agents (Supervisor, Ingestion, Identity, Extraction, Confirmation, Q&A, Notification)
- * 2. Hybrid RAG Pipeline (Vector embeddings + reranked retrieval)
- * 3. Real-Time Tracing (Execution tracing and observability)
+ * Light contrast section highlighting AI engineering architecture:
+ * 3 horizontal feature cards:
+ * 1. 7 Specialized Agents (Bot)
+ * 2. Hybrid RAG Pipeline (Layers)
+ * 3. Real-Time Tracing (Activity)
  */
 function TechHighlight() {
   const highlights = [
     {
+      icon: Bot,
       stat: '7 Specialized Agents',
       explanation:
         'Orchestrated by a supervisor for extraction, RAG, and notification.',
     },
     {
+      icon: Layers,
       stat: 'Hybrid RAG Pipeline',
       explanation:
         'Vector embeddings and reranked retrieval for transcript Q&A.',
     },
     {
+      icon: Activity,
       stat: 'Real-Time Tracing',
       explanation:
         'Full visibility and auditability into agent execution steps.',
@@ -36,12 +41,18 @@ function TechHighlight() {
         </div>
 
         <div className="tech-highlight-grid">
-          {highlights.map((item) => (
-            <div key={item.stat} className="tech-stat-block">
-              <h3 className="tech-stat-title">{item.stat}</h3>
-              <p className="tech-stat-desc">{item.explanation}</p>
-            </div>
-          ))}
+          {highlights.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.stat} className="tech-stat-block">
+                <div className="tech-stat-icon-wrapper" aria-hidden="true">
+                  <Icon className="tech-stat-icon" size={24} />
+                </div>
+                <h3 className="tech-stat-title">{item.stat}</h3>
+                <p className="tech-stat-desc">{item.explanation}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

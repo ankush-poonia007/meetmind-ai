@@ -56,7 +56,7 @@
 .btn-primary:hover {
   background: var(--color-accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 16px rgba(38, 111, 242, 0.35);
 }
 
 .btn-secondary {

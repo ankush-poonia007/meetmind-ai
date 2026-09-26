@@ -1,0 +1,567 @@
+/* ==========================================================================
+   MeetMind AI — Authentication Styles (Batch 4.6)
+   Matches Muted Blue Theme & Design System Foundation
+   ========================================================================== */
+
+/* ── Centered Auth Container ─────────────────────────────────────────────── */
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 40px);
+  padding: var(--space-xl) var(--space-md);
+  background-color: var(--color-bg-primary);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 36px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  transition: box-shadow var(--transition-base);
+}
+
+.auth-card.auth-card-wide {
+  max-width: 520px;
+}
+
+.auth-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* ── Auth Header & Brand ─────────────────────────────────────────────────── */
+.auth-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.auth-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background-color: var(--color-accent-soft);
+  border-radius: var(--radius-pill);
+  color: var(--color-accent-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: var(--space-xs);
+  text-decoration: none;
+}
+
+.auth-title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.25;
+}
+
+.auth-subtitle {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  max-width: 380px;
+}
+
+/* ── Error Banner ────────────────────────────────────────────────────────── */
+.auth-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  background-color: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  color: var(--color-status-high);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.auth-alert-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── Form Layout ─────────────────────────────────────────────────────────── */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 560px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  .auth-card {
+    padding: 24px 20px;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-label-optional {
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.form-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: #FFFFFF;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.4;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-input::placeholder {
+  color: #94A3B8;
+  opacity: 1;
+}
+
+.form-input:focus {
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 0 3px rgba(38, 111, 242, 0.15);
+}
+
+.form-input.has-error {
+  border-color: var(--color-status-high);
+}
+
+.form-input.has-error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.form-input:disabled {
+  background-color: #F8FAFC;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+/* ── Password Input with Toggle ──────────────────────────────────────────── */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper .form-input {
+  padding-right: 44px;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.password-toggle-btn:hover {
+  color: var(--color-accent-primary);
+  background-color: rgba(38, 111, 242, 0.08);
+}
+
+.password-toggle-btn:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 1px;
+}
+
+/* ── Inline Field Error ──────────────────────────────────────────────────── */
+.form-field-error {
+  font-size: 12px;
+  color: var(--color-status-high);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+/* ── Password Strength Meter & Live Checklist ────────────────────────────── */
+.password-strength-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.password-strength-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.strength-label {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.password-strength-bar {
+  display: flex;
+  gap: 4px;
+  height: 4px;
+  width: 100%;
+}
+
+.strength-segment {
+  flex: 1;
+  height: 100%;
+  border-radius: 2px;
+  background-color: var(--color-border);
+  transition: background-color var(--transition-fast);
+}
+
+.password-criteria-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 8px;
+  margin-top: 6px;
+  font-size: 11.5px;
+}
+
+.password-criteria-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-text-muted);
+  transition: color var(--transition-fast);
+}
+
+.password-criteria-item.met {
+  color: var(--color-status-low);
+  font-weight: 500;
+}
+
+.criteria-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #CBD5E1;
+}
+
+.password-criteria-item.met .criteria-dot {
+  background-color: var(--color-status-low);
+}
+
+/* ── Submit Button & Spinners ────────────────────────────────────────────── */
+.auth-submit-btn {
+  width: 100%;
+  padding: 13px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--radius-pill);
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.auth-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #FFFFFF;
+  border-radius: 50%;
+  animation: authSpin 0.7s linear infinite;
+}
+
+@keyframes authSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Card Footer & Alternates ────────────────────────────────────────────── */
+.auth-footer {
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-md);
+}
+
+.auth-link {
+  color: var(--color-accent-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.auth-link:hover {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+}
+
+.auth-back-link {
+  color: var(--color-text-muted);
+  font-size: 12.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.auth-back-link:hover {
+  color: var(--color-text-primary);
+}
+
+/* ── Selectable Options: Tab Switcher (Batch 4.6 Correction) ──────────────── */
+.auth-tabs {
+  display: flex;
+  background-color: var(--color-bg-pale-blue);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+  gap: 4px;
+  width: 100%;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.auth-tab:hover:not(.active) {
+  color: var(--color-text-primary);
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.auth-tab.active {
+  background-color: #FFFFFF;
+  color: var(--color-accent-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(8, 15, 28, 0.08);
+}
+
+.auth-tab:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+/* ── Focused Content Panel ───────────────────────────────────────────────── */
+.auth-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  animation: authPanelEnter var(--transition-fast) ease-out;
+}
+
+@keyframes authPanelEnter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-switch-prompt {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.auth-switch-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: var(--color-accent-primary);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.auth-switch-btn:hover {
+  color: var(--color-accent-dark);
+  text-decoration: underline;
+}
+
+.auth-switch-btn:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ── Dedicated Authentication Window Modal ───────────────────────────────── */
+.auth-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: rgba(8, 15, 28, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  animation: authBackdropFadeIn var(--transition-fast) ease-out;
+}
+
+.auth-modal-container {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  max-height: 92vh;
+  overflow-y: auto;
+  border-radius: var(--radius-lg);
+  animation: authModalSlideIn var(--transition-base) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-modal-container .auth-card {
+  box-shadow: var(--shadow-lg);
+  margin: 0;
+  max-height: none;
+}
+
+.auth-modal-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(8, 15, 28, 0.05);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.auth-modal-close-btn:hover {
+  background-color: var(--color-accent-soft);
+  color: var(--color-accent-primary);
+}
+
+.auth-modal-close-btn:focus-visible {
+  outline: 2px solid var(--color-accent-primary);
+  outline-offset: 2px;
+}
+
+@keyframes authBackdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes authModalSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ── Session Initializing Screen (Batch 4.7) ─────────────────────────────── */
+.auth-init-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--color-bg-primary);
+}
+
+.auth-init-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+}
+
+.auth-init-spinner {
+  width: 38px;
+  height: 38px;
+  border: 3px solid rgba(38, 111, 242, 0.15);
+  border-top-color: var(--color-accent-primary);
+  border-radius: 50%;
+  animation: authSpin 0.7s linear infinite;
+}
+
+.auth-init-text {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}
+
+
