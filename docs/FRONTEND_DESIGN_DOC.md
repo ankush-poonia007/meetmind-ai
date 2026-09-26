@@ -40,54 +40,81 @@ npm install react-router-dom axios lucide-react
 
 ---
 
-## SECTION 3 — COLOR SYSTEM
+## SECTION 3 — COLOR SYSTEM (FINALIZED MUTED BLUE THEME)
 
-All colors defined as CSS custom properties in `:root` inside `src/styles/variables.css`.
+> **AUTHORITATIVE DESIGN DECISION — SOURCE OF TRUTH:**
+> The **Muted Blue Theme** specified below is the permanent, authoritative visual source of truth for all frontend implementations across MeetMind AI. All future gates, batches, components, and pages must strictly adhere to this color palette and its corresponding CSS custom properties.
+
+### Approved Color Palette Specification
+
+| UI Element | Color Description | Hex Code | CSS Variable |
+| :--- | :--- | :--- | :--- |
+| **Sidebar** | Deep Muted Slate Blue | `#364A64` | `--color-sidebar-bg` |
+| **Sidebar Gradient** | Soft Slate Blue | `#435A78` | `--color-sidebar-gradient` |
+| **Active Navigation** | Medium Muted Blue | `#4B6382` | `--color-sidebar-active` |
+| **Primary Buttons & Accent** | Vivid Muted Blue | `#266FF2` | `--color-accent-primary` |
+| **Button Hover** | Deeper Blue | `#1F5FD4` | `--color-accent-dark` |
+| **Problem Section Background**| Pale Blue | `#E3ECF7` | `--color-bg-pale-blue` |
+| **Hero & Technical Sections** | Warm Ivory | `#F9F8F4` | `--color-bg-primary` |
+| **Cards** | Soft White | `#FFFFFF` | `--color-bg-secondary`, `--color-bg-card` |
+| **Primary Text** | Deep Navy Charcoal | `#080F1C` | `--color-text-primary` |
+| **Secondary Text** | Muted Slate Gray | `#536986` | `--color-text-secondary`, `--color-text-muted` |
+| **Borders** | Light Blue Gray | `#E3E8ED` | `--color-border` |
+| **Icon Background** | Very Light Blue | `#E3ECF7` | `--color-accent-soft` |
+| **Icon Accent** | Vivid Blue | `#266FF2` | `--color-accent-primary` |
+| **Sidebar Text / Icons** | Soft Off-White | `#EDF2F7` | `--color-sidebar-text` |
+| **Sidebar Secondary Labels** | Light Slate Blue | `#B8C9DC` | `--color-sidebar-muted` |
+
+All colors are defined as CSS custom properties in `:root` inside `src/styles/variables.css`:
 
 ```css
 :root {
   /* Backgrounds */
-  --color-bg-primary: #F7F4EE;        /* cream — main page background */
-  --color-bg-secondary: #EDEAE2;      /* slightly darker cream — card bg */
-  --color-bg-dark: #111111;           /* near black — contrast sections */
+  --color-bg-primary: #F9F8F4;        /* warm ivory — hero, technical section, main page */
+  --color-bg-secondary: #FFFFFF;      /* soft white — card background */
+  --color-bg-card: #FFFFFF;           /* soft white card background */
+  --color-bg-dark: #364A64;           /* deep muted slate blue */
   --color-bg-workspace: #F0EDE6;      /* workspace background */
+  --color-bg-pale-blue: #E3ECF7;      /* pale blue — problem section, icon badge bg */
 
   /* Text */
-  --color-text-primary: #1A1A1A;      /* near black — headings */
-  --color-text-secondary: #4A4A4A;    /* dark grey — body text */
-  --color-text-muted: #888888;        /* light grey — captions, labels */
-  --color-text-inverse: #F7F4EE;      /* cream — text on dark bg */
+  --color-text-primary: #080F1C;      /* deep navy charcoal — headings & primary text */
+  --color-text-secondary: #536986;    /* muted slate gray — body text */
+  --color-text-muted: #536986;        /* muted slate gray — captions, labels */
+  --color-text-inverse: #F9F8F4;      /* warm ivory/off-white — text on dark bg */
 
-  /* Accent — Blue/Dark Blue */
-  --color-accent-primary: #2563EB;    /* blue — primary CTA, active states */
-  --color-accent-dark: #1E40AF;       /* dark blue — hover states */
-  --color-accent-light: #DBEAFE;      /* light blue — subtle highlights */
-  --color-accent-soft: #EFF6FF;       /* very light blue — bg tints */
+  /* Accent & Interactive */
+  --color-accent-primary: #266FF2;    /* vivid muted blue — primary buttons, active indicator, icons */
+  --color-accent-dark: #1F5FD4;       /* deeper blue — button hover states */
+  --color-accent-light: #D5E4F7;      /* light blue — subtle highlights */
+  --color-accent-soft: #E3ECF7;       /* very light blue — icon background badges */
 
   /* Status Colors */
   --color-status-high: #DC2626;       /* red — high priority */
   --color-status-medium: #D97706;     /* amber — medium priority */
   --color-status-low: #16A34A;        /* green — low priority */
   --color-status-complete: #6B7280;   /* grey — completed tasks */
-  --color-status-pending: #2563EB;    /* blue — pending tasks */
+  --color-status-pending: #266FF2;    /* vivid muted blue — pending tasks */
   --color-status-expired: #991B1B;    /* dark red — expired tasks */
 
   /* Borders */
-  --color-border: #E2DDD6;            /* subtle border */
-  --color-border-dark: #C8C2B8;       /* stronger border */
+  --color-border: #E3E8ED;            /* light blue gray border */
+  --color-border-dark: #CCD5DE;       /* stronger border */
 
   /* Sidebar */
-  --color-sidebar-bg: #1A1A1A;        /* dark sidebar */
-  --color-sidebar-text: #D1D5DB;      /* light grey sidebar text */
-  --color-sidebar-active: #2563EB;    /* blue active link */
-  --color-sidebar-hover: #2A2A2A;     /* subtle hover */
-  --color-sidebar-border: #2A2A2A;    /* sidebar section divider */
+  --color-sidebar-bg: #364A64;        /* deep muted slate blue sidebar */
+  --color-sidebar-gradient: #435A78;  /* soft slate blue gradient tone */
+  --color-sidebar-active: #4B6382;    /* medium muted blue active item */
+  --color-sidebar-text: #EDF2F7;      /* soft off-white sidebar text & icons */
+  --color-sidebar-muted: #B8C9DC;     /* light slate for secondary sidebar text */
+  --color-sidebar-hover: rgba(255, 255, 255, 0.08); /* subtle hover */
+  --color-sidebar-border: rgba(255, 255, 255, 0.12); /* sidebar section divider */
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
-  --shadow-hover: 0 8px 32px rgba(37,99,235,0.15);
+  --shadow-sm: 0 1px 3px rgba(8, 15, 28, 0.05);
+  --shadow-md: 0 4px 12px rgba(8, 15, 28, 0.07);
+  --shadow-lg: 0 8px 24px rgba(8, 15, 28, 0.09);
+  --shadow-hover: 0 8px 28px rgba(38, 111, 242, 0.18);
 
   /* Spacing */
   --space-xs: 4px;
@@ -217,7 +244,7 @@ All colors defined as CSS custom properties in `:root` inside `src/styles/variab
 ```
 ┌─────────────────────────────────────────────────────────┐
 │  LEFT SIDEBAR (fixed, 240px wide, full height)          │
-│  Dark background (#1A1A1A)                              │
+│  Deep Muted Slate Blue (#364A64) with #435A78 gradient  │
 │  ─────────────────────────────────────────────────────  │
 │  [Icon] MeetMind          ← logo at top                 │
 │                                                         │
@@ -235,7 +262,7 @@ All colors defined as CSS custom properties in `:root` inside `src/styles/variab
 │  • Chat                                                 │
 │                                                         │
 │  ─────────────────────────────────────────────────────  │
-│  Footer area: version number, GitHub link               │
+│  Footer area: version number, GitHub & LinkedIn links   │
 ├─────────────────────────────────────────────────────────┤
 │  MAIN CONTENT AREA (margin-left: 240px, full height)    │
 │  Scrollable. Each page renders here.                    │
@@ -244,11 +271,14 @@ All colors defined as CSS custom properties in `:root` inside `src/styles/variab
 
 ### Sidebar Behavior
 - Fixed position, does not scroll with content
-- Width: 240px on desktop
+- Width: 240px default on desktop (supports horizontal resizing 200px–420px)
 - On screens < 768px: sidebar collapses to icons only (48px wide) with tooltip labels on hover
-- Active link: left border 3px solid `var(--color-accent-primary)` + text color changes to white
-- Hover: background `var(--color-sidebar-hover)` + text brightens
+- Background: Deep Muted Slate Blue `#364A64` with `#435A78` soft slate blue top gradient and polished surface highlight
+- Active link: Background `#4B6382`, left border 3px solid `var(--color-accent-primary)` (`#266FF2`), text and icon `#FFFFFF`
+- Inactive links: High-contrast light text `var(--color-sidebar-text)` (`#EDF2F7`)
+- Hover: background `var(--color-sidebar-hover)` + text and icon brighten to `#FFFFFF`
 - Workspace sub-links: shown only when current route starts with `/workspace`, hidden otherwise
+- Submenu header ("WORKSPACE") & Footer version text: `var(--color-sidebar-muted)` (`#B8C9DC`)
 - Smooth height transition when workspace sub-links expand/collapse
 
 ### Sidebar Component Structure
@@ -341,7 +371,7 @@ Applied to all cards and buttons.
 .btn-primary:hover {
   background: var(--color-accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+  box-shadow: 0 4px 16px rgba(38, 111, 242, 0.35);
 }
 ```
 
@@ -392,7 +422,7 @@ Route: `/`
 File: `src/pages/Home.jsx`
 
 ### Section 1 — Hero
-Full viewport height. Cream background.
+Full viewport height. Warm ivory background (`var(--color-bg-primary)` / `#F9F8F4`).
 
 **Layout:**
 - Centered content, max-width 900px, horizontally centered in content area
@@ -413,8 +443,8 @@ understood."
 extracts your tasks, and answers your questions — automatically."
 
 [CTA BUTTONS — two]
-[Primary] "Open Workspace"  → navigates to /workspace/dashboard
-[Secondary] "Read the Docs" → navigates to /docs
+[Primary] "Open Workspace"  → navigates to /workspace/dashboard (vivid blue #266FF2)
+[Secondary] "Read the Docs" → navigates to /docs (border #E3E8ED)
 
 [SPINNING TEXT ELEMENT]
 Positioned to the right of or below the headline block.
@@ -425,26 +455,26 @@ Ring diameter: 220px
 ```
 
 ### Section 2 — Problem Statement
-Dark background section (`var(--color-bg-dark)`). Cream text.
+Pale blue background section (`var(--color-bg-pale-blue)` / `#E3ECF7`). Distinct from surrounding warm ivory sections.
 
 **Content:**
 ```
-[LABEL — muted, on dark]
+[LABEL — accent vivid blue]
 "The problem"
 
-[HEADLINE — H2, serif, inverse color]
+[HEADLINE — H2, serif, deep navy charcoal #080F1C]
 "Meetings happen.
 *Details get lost.*"
 
-[BODY TEXT — two short paragraphs]
+[BODY TEXT — two short paragraphs, muted slate gray #536986]
 "Every meeting produces tasks, decisions, and deadlines buried in long transcripts.
 Finding yours takes time you don't have."
 
 "MeetMind reads the transcript, finds you in it, and gives you only what matters."
 ```
 
-### Section 3 — Feature Highlights (3 cards)
-Back to cream background. Three feature cards side by side.
+### Section 3 — Feature Highlights (4 cards)
+Warm ivory background (`var(--color-bg-primary)` / `#F9F8F4`). Four feature cards side by side in a 2-column grid. Soft white card surfaces (`#FFFFFF`) with light blue-gray borders (`#E3E8ED`), very light blue icon wrappers (`#E3ECF7`), and vivid blue icons (`#266FF2`).
 
 **Card 1 — Identity-Aware Extraction**
 - Icon: `UserCheck` from Lucide
@@ -469,30 +499,35 @@ Back to cream background. Three feature cards side by side.
 Cards animate in with fade-up on scroll, staggered 100ms delay per card.
 
 ### Section 4 — How It Works (3 steps)
-Alternating layout: step number large on one side, content on the other.
+Warm ivory background (`var(--color-bg-primary)` / `#F9F8F4`). Alternating layout: step number large on one side in vivid blue (`#266FF2`), content on the other. Dividing borders in light blue-gray (`#E3E8ED`).
 
 **Step 1:** Upload your transcript (PDF, TXT, or paste)
 **Step 2:** MeetMind identifies you and extracts your tasks
 **Step 3:** Confirm tasks, then chat, track, and get alerted
 
-### Section 5 — Tech Highlight (dark section)
-Dark background. Shows the AI engineering depth simply.
+### Section 5 — Tech Highlight ("AI Engineering Depth")
+Warm ivory background (`var(--color-bg-primary)` / `#F9F8F4`). Shows the AI engineering depth simply with three feature cards side by side. Soft white card surfaces (`#FFFFFF`) with light blue-gray borders (`#E3E8ED`), very light blue icon wrappers (`#E3ECF7`), and vivid blue icons (`#266FF2`).
 
 **Content:**
 ```
 [LABEL] "Built with"
+[H2] "AI Engineering Depth"
 
-[3 horizontal stat blocks]
-7 Specialized Agents   |   Hybrid RAG Pipeline   |   Real-Time Tracing
-Each with one-line explanation below.
+[3 horizontal feature cards]
+1. 7 Specialized Agents (Bot icon)
+   "Orchestrated by a supervisor for extraction, RAG, and notification."
+2. Hybrid RAG Pipeline (Layers icon)
+   "Vector embeddings and reranked retrieval for transcript Q&A."
+3. Real-Time Tracing (Activity icon)
+   "Full visibility and auditability into agent execution steps."
 ```
 
 ### Section 6 — CTA Banner
-Cream background. Centered.
+Warm ivory background (`var(--color-bg-primary)` / `#F9F8F4`). Centered conversion banner.
 
 ```
 [H2] "Ready to understand your meetings?"
-[Button Primary] "Get Started" → /workspace/dashboard
+[Button Primary] "Get Started" → /workspace/dashboard (vivid blue #266FF2)
 ```
 
 ---
@@ -798,13 +833,13 @@ CSS:
 .btn-primary:hover {
   background: var(--color-accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+  box-shadow: 0 4px 16px rgba(38, 111, 242, 0.35);
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--color-text-primary);
-  border: 1.5px solid var(--color-border-dark);
+  border: 1.5px solid var(--color-border);
   padding: 12px 24px;
   border-radius: var(--radius-pill);
   font-family: var(--font-sans);
@@ -852,7 +887,7 @@ CSS:
 .badge-high     { background: #FEE2E2; color: #DC2626; }
 .badge-medium   { background: #FEF3C7; color: #D97706; }
 .badge-low      { background: #DCFCE7; color: #16A34A; }
-.badge-pending  { background: #DBEAFE; color: #2563EB; }
+.badge-pending  { background: #DBEAFE; color: #266FF2; }
 .badge-complete { background: #F3F4F6; color: #6B7280; }
 .badge-expired  { background: #FEE2E2; color: #991B1B; }
 ```
