@@ -44,6 +44,7 @@ class ExtractionService:
         db: Session,
         meeting_id: UUID,
         user_id: UUID,
+        person_name: Optional[str] = None,
     ) -> ExtractionPreviewResponse:
         """
         Initiates the multi-agent extraction pipeline for a meeting.
@@ -53,6 +54,7 @@ class ExtractionService:
             db: Active synchronous database session.
             meeting_id: Target meeting UUID.
             user_id: Submitting user UUID.
+            person_name: Optional explicit participant name.
 
         Returns:
             ExtractionPreviewResponse with extracted items awaiting user confirmation.
@@ -62,7 +64,9 @@ class ExtractionService:
             UserNotFoundError: If user does not exist.
             InvalidOwnershipError: If meeting does not belong to user.
         """
-        logger.info(f"Initiating extraction pipeline for meeting {meeting_id}, user {user_id}")
+        logger.info(
+            f"Initiating extraction pipeline for meeting {meeting_id}, user {user_id} (person: {person_name})"
+        )
 
         meeting = db.query(Meeting).filter(Meeting.id == meeting_id).first()
         if not meeting:
@@ -88,7 +92,9 @@ class ExtractionService:
             )
 
         # Delegate to LangGraph pipeline boundary
-        preview_data = ExtractionService._execute_graph_extraction(meeting=meeting, user=user, db=db)
+        preview_data = ExtractionService._execute_graph_extraction(
+            meeting=meeting, user=user, person_name=person_name, db=db
+        )
 
         # Cache preview in state store awaiting user confirmation
         _EXTRACTION_PREVIEWS[str(meeting_id)] = preview_data
@@ -106,13 +112,22 @@ class ExtractionService:
         )
 
     @staticmethod
-    def _execute_graph_extraction(meeting: Meeting, user: User, db: Optional[Session] = None) -> dict[str, Any]:
+    def _execute_graph_extraction(
+        meeting: Meeting,
+        user: User,
+        person_name: Optional[str] = None,
+        db: Optional[Session] = None,
+    ) -> dict[str, Any]:
         """
         Boundary interface for LangGraph extraction pipeline execution.
         Delegates to graph runner in Batch 3.
         """
         try:
             from app.graph.graph import run_extraction_graph
+            if person_name is not None:
+                return run_extraction_graph(
+                    meeting_id=meeting.id, user_id=user.id, person_name=person_name, db=db
+                )
             return run_extraction_graph(meeting_id=meeting.id, user_id=user.id, db=db)
         except (ImportError, AttributeError):
             logger.info("LangGraph pipeline not yet compiled; returning initialized extraction state")
@@ -244,6 +259,7 @@ class ExtractionService:
             user_id=confirm_req.user_id,
             confirmation=decision_val,
             confirmed_task_ids=[str(cid) for cid in confirm_req.confirmed_task_ids],
+            modified_tasks=[m.model_dump() for m in confirm_req.modified_tasks] if confirm_req.modified_tasks else [],
             db=db,
         )
 

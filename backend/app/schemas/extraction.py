@@ -9,7 +9,7 @@ from datetime import date
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.core.constants import TaskPriority, UserConfirmation
 
@@ -18,6 +18,7 @@ from app.core.constants import TaskPriority, UserConfirmation
 
 class ExtractedTask(BaseModel):
     """An unconfirmed action item extracted by the Extraction Agent."""
+    id: Optional[str] = Field(None, description="Task identifier or index")
     title: str = Field(..., min_length=1, max_length=500, description="Task title")
     description: Optional[str] = Field(None, description="AI-generated description")
     priority: Optional[TaskPriority] = Field(TaskPriority.MEDIUM, description="Inferred task priority")
@@ -31,12 +32,37 @@ class ExtractedHighlight(BaseModel):
     relevance_reason: Optional[str] = Field(None, description="Why this highlight is relevant to user")
 
 
+# ── Confirmation Edit Schemas ────────────────────────────────────────────────
+
+class ModifiedTaskConfirm(BaseModel):
+    """Edited task details submitted during confirmation."""
+    id: Optional[str] = Field(None, description="Task identifier or original index")
+    title: Optional[str] = Field(None, max_length=500, description="Task title")
+    description: Optional[str] = Field(None, description="User-edited task description")
+    deadline: Optional[date] = Field(None, description="User-edited deadline")
+    priority: Optional[TaskPriority] = Field(None, description="Task priority")
+    confidence_score: Optional[float] = Field(None, ge=0.0, le=1.0, description="Confidence score")
+
+
 # ── API Interaction Schemas ──────────────────────────────────────────────────
 
 class ExtractionRunRequest(BaseModel):
     """Payload to trigger the extraction pipeline (POST /api/v1/extraction/{meeting_id}/run)."""
     meeting_id: UUID = Field(..., description="Target meeting identifier")
     user_id: UUID = Field(..., description="Target user identifier")
+    person_name: Optional[str] = Field(
+        None,
+        description="Explicit participant name to extract tasks for",
+    )
+
+    @field_validator("person_name")
+    @classmethod
+    def validate_person_name(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None:
+            if not v.strip():
+                raise ValueError("person_name cannot be empty or whitespace")
+            return v.strip()
+        return v
 
 
 class ExtractionPreviewResponse(BaseModel):
@@ -58,6 +84,17 @@ class ExtractionConfirmRequest(BaseModel):
         default_factory=list,
         description="List of selected task identifiers or indices if user_confirmation is partial",
     )
+    modified_tasks: Optional[list[ModifiedTaskConfirm]] = Field(
+        default_factory=list,
+        description="List of user-edited task objects with updated descriptions, deadlines, etc.",
+    )
+
+    @field_validator("confirmed_task_ids")
+    @classmethod
+    def validate_no_duplicate_task_ids(cls, v: list[str]) -> list[str]:
+        if len(v) != len(set(v)):
+            raise ValueError("Duplicate task IDs submitted in confirmation request")
+        return v
 
 
 class ExtractionResult(BaseModel):

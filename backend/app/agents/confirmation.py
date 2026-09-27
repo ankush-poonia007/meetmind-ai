@@ -83,6 +83,7 @@ class ConfirmationAgent:
         # 1. HITL Interrupt: Pause if user confirmation is not yet in state
         confirmation_decision = state.get("user_confirmation")
         confirmed_task_ids = state.get("confirmed_task_ids", [])
+        modified_tasks = state.get("modified_tasks", [])
 
         if not confirmation_decision:
             preview = cls.present_tasks_tool(extracted_tasks)
@@ -103,6 +104,7 @@ class ConfirmationAgent:
             if isinstance(resume_data, dict):
                 confirmation_decision = resume_data.get("user_confirmation", "no")
                 confirmed_task_ids = resume_data.get("confirmed_task_ids", [])
+                modified_tasks = resume_data.get("modified_tasks", modified_tasks)
             elif isinstance(resume_data, str):
                 confirmation_decision = resume_data
                 confirmed_task_ids = []
@@ -132,6 +134,11 @@ class ConfirmationAgent:
         # 2. Process tasks according to decision
         saved_tasks_count = 0
         discarded_tasks_count = 0
+
+        # Reject duplicate task ID submissions
+        if len(confirmed_task_ids) != len(set(confirmed_task_ids)):
+            raise InvalidStateError("Duplicate task IDs submitted in confirmation request.")
+
         confirmed_ids_set = {str(cid) for cid in confirmed_task_ids}
 
         # Validate that confirmed_task_ids belong to current extraction context
@@ -139,6 +146,10 @@ class ConfirmationAgent:
         available_titles = {t.get("title", "") for t in extracted_tasks}
 
         if decision_val == UserConfirmation.PARTIAL.value:
+            if not confirmed_task_ids:
+                raise InvalidStateError(
+                    "confirmed_task_ids cannot be empty when user_confirmation is 'partial'."
+                )
             for cid in confirmed_ids_set:
                 if cid not in available_ids and cid not in available_titles:
                     raise InvalidOwnershipError(
@@ -174,7 +185,59 @@ class ConfirmationAgent:
                             should_save = True
 
                     if should_save:
+                        # Find potential user edit from modified_tasks
+                        matching_mod = None
+                        if modified_tasks:
+                            for m in modified_tasks:
+                                m_id = str(m.get("id")) if m.get("id") is not None else None
+                                m_title = m.get("title")
+                                if m_id is not None and (m_id == task_id or m_id == str(idx)):
+                                    matching_mod = m
+                                    break
+                                elif m_title and m_title.strip().lower() == task_title.strip().lower():
+                                    matching_mod = m
+                                    break
+
+                            if not matching_mod:
+                                if len(modified_tasks) == len(extracted_tasks) and idx < len(modified_tasks):
+                                    matching_mod = modified_tasks[idx]
+                                elif decision_val == UserConfirmation.PARTIAL.value and len(modified_tasks) == len(confirmed_task_ids):
+                                    c_list = list(confirmed_task_ids)
+                                    for c_idx, c_val in enumerate(c_list):
+                                        if c_val == task_id or c_val == str(idx) or c_val == task_title:
+                                            if c_idx < len(modified_tasks):
+                                                matching_mod = modified_tasks[c_idx]
+                                            break
+
+                        # Merge edits
+                        final_title = task_title
+                        final_desc = t_data.get("description")
+                        final_deadline = t_data.get("deadline")
                         raw_prio = t_data.get("priority", "medium")
+
+                        if matching_mod:
+                            if matching_mod.get("title") is not None:
+                                final_title = matching_mod.get("title")
+                            if matching_mod.get("description") is not None:
+                                final_desc = matching_mod.get("description")
+                            if matching_mod.get("deadline") is not None:
+                                final_deadline = matching_mod.get("deadline")
+                            if matching_mod.get("priority") is not None:
+                                raw_prio = matching_mod.get("priority")
+
+                        # Validate deadline format if string
+                        if isinstance(final_deadline, str) and final_deadline.strip():
+                            try:
+                                from datetime import datetime
+                                if "T" in final_deadline:
+                                    final_deadline = datetime.fromisoformat(final_deadline)
+                                else:
+                                    final_deadline = datetime.strptime(final_deadline, "%Y-%m-%d")
+                            except (ValueError, TypeError):
+                                raise InvalidStateError(
+                                    f"Invalid deadline format '{final_deadline}': expected ISO format (YYYY-MM-DD)"
+                                )
+
                         prio_str = raw_prio.value if hasattr(raw_prio, "value") else str(raw_prio).lower()
                         try:
                             prio_enum = DBTaskPriority(prio_str)
@@ -184,10 +247,10 @@ class ConfirmationAgent:
                         db_task = Task(
                             meeting_id=meeting_uuid,
                             user_id=user_uuid,
-                            title=task_title,
-                            description=t_data.get("description"),
+                            title=final_title,
+                            description=final_desc,
                             priority=prio_enum,
-                            deadline=t_data.get("deadline"),
+                            deadline=final_deadline,
                             status=DBTaskStatus.pending,
                             alert_sent=False,
                         )

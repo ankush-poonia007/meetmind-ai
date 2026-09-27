@@ -38,10 +38,14 @@ class MeetMindState(TypedDict, total=False):
     ingestion_complete: bool
 
     # ── Identity ────────────────────────────────────────────────────────────
+    person_name: Optional[str]
     user_name: str
     user_role: str
     user_mentions: list[str]
     identity_confirmed: bool
+    identity_complete: bool
+    identity_status: Optional[str]
+    identity_message: Optional[str]
 
     # ── Extraction ──────────────────────────────────────────────────────────
     extracted_tasks: list[dict[str, Any]]
@@ -51,6 +55,7 @@ class MeetMindState(TypedDict, total=False):
     # ── Confirmation ────────────────────────────────────────────────────────
     user_confirmation: str  # yes | no | partial
     confirmed_task_ids: list[str]
+    modified_tasks: list[dict[str, Any]]
     saved_tasks: int
     confirmation_complete: bool
 
