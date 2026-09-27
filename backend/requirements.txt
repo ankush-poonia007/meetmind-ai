@@ -1,55 +1,55 @@
 # ── Web Framework ──────────────────────────────────────────
-fastapi
-uvicorn[standard]
-python-multipart
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+python-multipart==0.0.32
 
 # ── Database ───────────────────────────────────────────────
-sqlalchemy>=2.0,<3.0
-alembic
-psycopg2-binary
+sqlalchemy==2.0.54
+alembic==1.20.0
+psycopg2-binary==2.9.13
 
 # ── Pydantic & Settings ────────────────────────────────────
-pydantic
-pydantic-settings
+pydantic==2.13.5
+pydantic-settings==2.15.0
 
 # ── LangChain Core ─────────────────────────────────────────
-langchain
-langchain-core
-langchain-community
-langgraph
+langchain==1.4.2
+langchain-core==1.6.4
+langchain-community==0.4.2
+langgraph==1.2.12
 
 # ── LangChain Integrations ─────────────────────────────────
-langchain-google-genai
-langchain-openai
-langchain-pinecone
+langchain-google-genai==4.4.0
+langchain-openai==1.6.5
+langchain-pinecone==0.2.13
 
 # ── Google Gemini ──────────────────────────────────────────
-google-generativeai
+google-generativeai==0.8.6
 
 # ── OpenRouter (via OpenAI client) ─────────────────────────
-openai
+openai==3.19.1
 
 # ── Pinecone ───────────────────────────────────────────────
-pinecone-client
+pinecone==7.3.0
 
 # ── RAG ────────────────────────────────────────────────────
-sentence-transformers
-rank-bm25
-pypdf
-python-docx
+sentence-transformers==6.1.0
+rank-bm25==0.2.2
+pypdf==5.0.1
+python-docx==1.2.0
 
 # ── Email ──────────────────────────────────────────────────
-resend
+resend==2.47.0
 
 # ── Scheduler ──────────────────────────────────────────────
-apscheduler
+APScheduler==3.11.3
 
 # ── Utilities & Security ───────────────────────────────────
-python-dotenv
-python-jose
-argon2-cffi
-httpx
-aiofiles
+python-dotenv==1.0.1
+python-jose==3.5.0
+argon2-cffi==25.1.0
+httpx==0.28.1
+aiofiles==25.1.0
 
 # ── Logging ────────────────────────────────────────────────
-loguru
+loguru==0.7.3
