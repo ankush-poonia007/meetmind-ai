@@ -61,6 +61,7 @@ async def lifespan(app: FastAPI):
     1. Shuts down AsyncIOScheduler cleanly.
     """
     logger.info("Application startup initiated.")
+    logger.info(f"CORS middleware configured with allowed origins: {settings.cors_origins}")
 
     # 1. Initialize provider gateway and store on app.state
     gateway = get_provider_gateway()
@@ -129,12 +130,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:8501",
-        "http://127.0.0.1:8501",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=settings.cors_origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
