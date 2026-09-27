@@ -82,7 +82,26 @@ class ChatService:
             )
 
         try:
-            # 1. Persist user message
+            # 1. Fetch recent conversation history (last 5 messages) for Q&A context
+            recent_msgs = (
+                db.query(ChatMessage)
+                .filter(
+                    ChatMessage.meeting_id == meeting_id,
+                    ChatMessage.user_id == chat_request.user_id,
+                )
+                .order_by(ChatMessage.created_at.desc())
+                .limit(5)
+                .all()
+            )
+            chat_history: list[dict[str, str]] = [
+                {
+                    "role": m.role.value if hasattr(m.role, "value") else str(m.role),
+                    "content": m.content,
+                }
+                for m in reversed(recent_msgs)
+            ]
+
+            # 2. Persist user message
             user_msg = ChatMessage(
                 meeting_id=meeting_id,
                 user_id=chat_request.user_id,
@@ -103,7 +122,7 @@ class ChatService:
             user_name = participant.name if participant else user.name
             user_role = participant.role if participant else None
 
-            # 2. Delegate Q&A execution to agent pipeline boundary
+            # 3. Delegate Q&A execution to agent pipeline boundary
             answer, sources, confidence = ChatService._invoke_qa_pipeline(
                 db=db,
                 meeting=meeting,
@@ -111,9 +130,11 @@ class ChatService:
                 question=chat_request.question.strip(),
                 user_name=user_name,
                 user_role=user_role,
+                raw_transcript=meeting.raw_transcript,
+                chat_history=chat_history,
             )
 
-            # 3. Persist assistant response
+            # 4. Persist assistant response
             assistant_msg = ChatMessage(
                 meeting_id=meeting_id,
                 user_id=chat_request.user_id,
@@ -144,6 +165,8 @@ class ChatService:
         question: str,
         user_name: str,
         user_role: Optional[str] = None,
+        raw_transcript: Optional[str] = None,
+        chat_history: Optional[list[dict[str, str]]] = None,
     ) -> tuple[str, list[ChatSource], ConfidenceLevel]:
         """
         Boundary interface for Q&A Agent execution.

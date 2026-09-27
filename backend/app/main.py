@@ -128,9 +128,30 @@ app = FastAPI(
 
 # ── CORS Middleware ──────────────────────────────────────────────────────────
 
+# Allowed frontend origins: Vite (5173), Next/React (3000), and Vercel production domain
+_raw_origins = (
+    settings.cors_origins
+    if isinstance(settings.cors_origins, list)
+    else [settings.cors_origins]
+)
+# Filter out deprecated Streamlit ports (8501) and ensure Vite + Vercel domains are allowed
+cors_origins: list[str] = [
+    origin for origin in _raw_origins
+    if origin not in ("http://localhost:8501", "http://127.0.0.1:8501")
+]
+for _required_origin in [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://meetmind-ai.vercel.app",
+]:
+    if _required_origin not in cors_origins:
+        cors_origins.append(_required_origin)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=cors_origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],

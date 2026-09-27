@@ -18,6 +18,7 @@ Strict architecture boundaries:
 from __future__ import annotations
 
 import re
+import threading
 import uuid
 from typing import Any, Dict, List, Optional, Union
 
@@ -353,7 +354,29 @@ class HybridRetriever:
         return reranked
 
 
-# ── Global Function ──────────────────────────────────────────────────────────
+# ── Global Singleton Pattern ─────────────────────────────────────────────────
+
+_GLOBAL_RETRIEVER: Optional[HybridRetriever] = None
+_RETRIEVER_LOCK = threading.Lock()
+
+
+def get_retriever(
+    semantic_top_k: int = PINECONE_TOP_K,
+    bm25_top_k: int = BM25_TOP_K,
+    final_top_k: int = RERANKER_TOP_K,
+) -> HybridRetriever:
+    """Returns or initializes the thread-safe HybridRetriever singleton."""
+    global _GLOBAL_RETRIEVER
+    if _GLOBAL_RETRIEVER is None:
+        with _RETRIEVER_LOCK:
+            if _GLOBAL_RETRIEVER is None:
+                _GLOBAL_RETRIEVER = HybridRetriever(
+                    semantic_top_k=semantic_top_k,
+                    bm25_top_k=bm25_top_k,
+                    final_top_k=final_top_k,
+                )
+    return _GLOBAL_RETRIEVER
+
 
 def retrieve(
     meeting_id: Union[str, uuid.UUID],
@@ -361,5 +384,5 @@ def retrieve(
     db_session: Optional[Any] = None,
 ) -> List[RetrievedChunk]:
     """Convenience functional wrapper for meeting-scoped hybrid retrieval."""
-    retriever = HybridRetriever()
+    retriever = get_retriever()
     return retriever.retrieve(meeting_id=meeting_id, query=query, db_session=db_session)

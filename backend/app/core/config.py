@@ -39,13 +39,13 @@ PINECONE_NAMESPACE_PREFIX = "meeting_"
 
 # ── Retrieval Limits ─────────────────────────────────────────────────────────
 # Number of candidates fetched from semantic vector search
-PINECONE_TOP_K = 10
+PINECONE_TOP_K = 15
 
 # Number of candidates fetched from PostgreSQL BM25 keyword search
-BM25_TOP_K = 10
+BM25_TOP_K = 15
 
 # Top reranked candidates fed to the synthesis prompt
-RERANKER_TOP_K = 5
+RERANKER_TOP_K = 8
 
 
 # ── Operation Retry Limits ───────────────────────────────────────────────────
