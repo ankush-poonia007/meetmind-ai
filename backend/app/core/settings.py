@@ -7,8 +7,9 @@ plus backward-compatible legacy single-key fallbacks.
 Credentials are masked in string representations.
 """
 
-from typing import Optional
-from pydantic import AliasChoices, Field
+from typing import Any, Optional, Union
+from urllib.parse import urlparse
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -104,6 +105,77 @@ class Settings(BaseSettings):
     app_env: str = "development"
     debug: bool = False
 
+    # ── CORS Configuration ─────────────────────────────────────────────────
+    cors_origins: Union[list[str], str] = Field(
+        default_factory=lambda: [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://localhost:8501",
+            "http://127.0.0.1:8501",
+        ],
+        description="Allowed frontend origins for CORS",
+    )
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v: Any) -> list[str]:
+        """
+        Parses and sanitizes CORS allowed origins from environment variables.
+        Supports comma-separated strings, JSON lists, or iterables.
+        Ensures exact origins (scheme + host[:port]) without trailing slashes or subpaths.
+        Prevents accidental character-by-character string splitting.
+        """
+        default_origins = [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://localhost:8501",
+            "http://127.0.0.1:8501",
+        ]
+
+        def _clean_single_origin(origin: str) -> str:
+            origin = origin.strip()
+            if not origin:
+                return ""
+            if origin == "*":
+                return "*"
+            if "://" in origin:
+                parsed = urlparse(origin)
+                if parsed.scheme and parsed.netloc:
+                    return f"{parsed.scheme}://{parsed.netloc}"
+            return origin.rstrip("/")
+
+        if v is None:
+            return default_origins
+
+        if isinstance(v, str):
+            v_str = v.strip()
+            if not v_str:
+                return default_origins
+            # Handle JSON array representation e.g. ["http://localhost:5173"]
+            if v_str.startswith("[") and v_str.endswith("]"):
+                try:
+                    import json
+                    parsed_list = json.loads(v_str)
+                    if isinstance(parsed_list, list):
+                        cleaned = [_clean_single_origin(str(item)) for item in parsed_list]
+                        return [c for c in cleaned if c]
+                except Exception:
+                    pass
+            # Comma-separated string representation e.g. "http://localhost:5173,http://localhost:3000"
+            raw_items = v_str.split(",")
+            cleaned = [_clean_single_origin(item) for item in raw_items]
+            return [c for c in cleaned if c]
+
+        if isinstance(v, (list, tuple, set)):
+            cleaned = [_clean_single_origin(str(item)) for item in v]
+            return [c for c in cleaned if c]
+
+        return default_origins
+
     def validate_security_configuration(self) -> None:
         """Fails safely if security configuration is missing or invalid in production."""
         if self.app_env == "production":
@@ -164,6 +236,7 @@ class Settings(BaseSettings):
     def __repr__(self) -> str:
         return (
             f"<Settings app_env={self.app_env!r} debug={self.debug} "
+            f"cors_origins={self.cors_origins!r} "
             f"gemini_keys_configured={len(self.get_gemini_keys())} "
             f"openrouter_keys_configured={len(self.get_openrouter_keys())} "
             f"tavily_keys_configured={len(self.get_tavily_keys())}>"
