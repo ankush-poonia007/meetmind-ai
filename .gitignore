@@ -10,6 +10,8 @@ __pycache__/
 # ── Virtual Environment ────────────────────────────────────
 venv/
 .venv/
+venv-1/
+.venv-1/
 env/
 ENV/
 
@@ -62,3 +64,4 @@ htmlcov/
 # ── Files ──────────────────────────────────────────────────
 BATCH_6_LEGACY_DEADLINE_DATA_AUDIT_REPORT.md
 GATE_4_ANALYSIS.md
+meetmind-frontend/node_modules

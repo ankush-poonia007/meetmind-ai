@@ -11,6 +11,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
+from app.core.exceptions import InvalidOwnershipError
 from app.db.session import get_db
 from app.schemas.extraction import (
     ExtractionConfirmRequest,
@@ -36,7 +37,17 @@ def run_extraction(
     db: Session = Depends(get_db),
 ) -> ExtractionPreviewResponse:
     """Runs extraction pipeline and returns preview."""
-    return ExtractionService.run_extraction(db=db, meeting_id=meeting_id, user_id=run_req.user_id)
+    if run_req.meeting_id != meeting_id:
+        raise InvalidOwnershipError(
+            f"Meeting ID in path ('{meeting_id}') does not match meeting ID in request body ('{run_req.meeting_id}').",
+            details={"path_meeting_id": str(meeting_id), "body_meeting_id": str(run_req.meeting_id)},
+        )
+    return ExtractionService.run_extraction(
+        db=db,
+        meeting_id=meeting_id,
+        user_id=run_req.user_id,
+        person_name=run_req.person_name,
+    )
 
 
 @router.get(
@@ -68,12 +79,9 @@ def confirm_extraction(
     db: Session = Depends(get_db),
 ) -> ExtractionResult:
     """Submits task confirmation and commits approved items to database."""
-    # Ensure meeting_id matches path
     if confirm_req.meeting_id != meeting_id:
-        confirm_req = ExtractionConfirmRequest(
-            meeting_id=meeting_id,
-            user_id=confirm_req.user_id,
-            user_confirmation=confirm_req.user_confirmation,
-            confirmed_task_ids=confirm_req.confirmed_task_ids,
+        raise InvalidOwnershipError(
+            f"Meeting ID in path ('{meeting_id}') does not match meeting ID in request body ('{confirm_req.meeting_id}').",
+            details={"path_meeting_id": str(meeting_id), "body_meeting_id": str(confirm_req.meeting_id)},
         )
     return ExtractionService.confirm_extraction(db=db, confirm_req=confirm_req)

@@ -1,0 +1,76 @@
+/* ==========================================================================
+   MeetMind AI — Design Tokens (Section 3 & Section 4)
+   ========================================================================== */
+
+:root {
+  /* ── Background Colors ─────────────────────────────────────────────────── */
+  --color-bg-primary: #F9F8F4;        /* warm ivory — hero, tech section, main page */
+  --color-bg-secondary: #FFFFFF;      /* soft white — card background */
+  --color-bg-dark: #364A64;           /* deep muted slate blue */
+  --color-bg-workspace: #F0EDE6;      /* workspace background */
+  --color-bg-pale-blue: #E3ECF7;      /* pale blue — problem section, icon bg */
+  --color-bg-card: #FFFFFF;           /* soft white card background */
+
+  /* ── Text Colors ───────────────────────────────────────────────────────── */
+  --color-text-primary: #080F1C;      /* deep navy charcoal — headings & primary text */
+  --color-text-secondary: #536986;    /* muted slate gray — body & secondary text */
+  --color-text-muted: #536986;        /* muted slate gray — captions, labels */
+  --color-text-inverse: #F9F8F4;      /* warm ivory/off-white — text on dark bg */
+
+  /* ── Accent Colors ─────────────────────────────────────────────────────── */
+  --color-accent-primary: #266FF2;    /* vivid muted blue — primary buttons, icon accent */
+  --color-accent-dark: #1F5FD4;       /* deeper blue — button hover states */
+  --color-accent-light: #D5E4F7;      /* light blue highlight */
+  --color-accent-soft: #E3ECF7;       /* very light blue — icon background */
+
+  /* ── Status Colors ─────────────────────────────────────────────────────── */
+  --color-status-high: #DC2626;       /* red — high priority */
+  --color-status-medium: #D97706;     /* amber — medium priority */
+  --color-status-low: #16A34A;        /* green — low priority */
+  --color-status-complete: #6B7280;   /* grey — completed tasks */
+  --color-status-pending: #266FF2;    /* vivid muted blue — pending tasks */
+  --color-status-expired: #991B1B;    /* dark red — expired tasks */
+
+  /* ── Border Colors ─────────────────────────────────────────────────────── */
+  --color-border: #E3E8ED;            /* light blue gray border */
+  --color-border-dark: #CCD5DE;       /* slightly stronger border */
+
+  /* ── Sidebar Colors ────────────────────────────────────────────────────── */
+  --color-sidebar-bg: #364A64;        /* deep muted slate blue sidebar */
+  --color-sidebar-gradient: #435A78;  /* soft slate blue gradient tone */
+  --color-sidebar-active: #4B6382;    /* medium muted blue active item */
+  --color-sidebar-text: #EDF2F7;      /* soft off-white sidebar text */
+  --color-sidebar-muted: #B8C9DC;     /* clear, readable light slate for secondary sidebar text */
+  --color-sidebar-hover: rgba(255, 255, 255, 0.08); /* subtle hover */
+  --color-sidebar-border: rgba(255, 255, 255, 0.12); /* sidebar section divider */
+
+  /* ── Shadows ───────────────────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 3px rgba(8, 15, 28, 0.05);
+  --shadow-md: 0 4px 12px rgba(8, 15, 28, 0.07);
+  --shadow-lg: 0 8px 24px rgba(8, 15, 28, 0.09);
+  --shadow-hover: 0 8px 28px rgba(38, 111, 242, 0.18);
+
+  /* ── Spacing Scale ─────────────────────────────────────────────────────── */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+
+  /* ── Border Radius ─────────────────────────────────────────────────────── */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 9999px;
+
+  /* ── Transitions ───────────────────────────────────────────────────────── */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* ── Font Stacks ───────────────────────────────────────────────────────── */
+  --font-serif: 'Playfair Display', Georgia, serif;   /* headings */
+  --font-sans: 'Inter', system-ui, sans-serif;         /* body, UI */
+}

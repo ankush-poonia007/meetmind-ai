@@ -186,6 +186,7 @@ meetmind_graph = build_meetmind_graph(checkpointer=global_checkpointer)
 def run_extraction_graph(
     meeting_id: UUID,
     user_id: UUID,
+    person_name: Optional[str] = None,
     db: Optional[Any] = None,
 ) -> dict[str, Any]:
     """
@@ -202,6 +203,7 @@ def run_extraction_graph(
     initial_state: MeetMindState = {
         "meeting_id": meeting_id_str,
         "user_id": str(user_id),
+        "person_name": person_name,
         "session_action": "ingest",
         "ingestion_complete": False,
         "identity_confirmed": False,
@@ -236,6 +238,7 @@ def resume_extraction_graph(
     user_id: UUID,
     confirmation: str,
     confirmed_task_ids: Optional[list[str]] = None,
+    modified_tasks: Optional[list[dict[str, Any]]] = None,
     db: Optional[Any] = None,
 ) -> dict[str, Any]:
     """
@@ -261,6 +264,7 @@ def resume_extraction_graph(
             "user_id": str(user_id),
             "user_confirmation": confirmation,
             "confirmed_task_ids": confirmed_task_ids or [],
+            "modified_tasks": modified_tasks or [],
             "extracted_tasks": cached.get("tasks", []),
             "extracted_highlights": cached.get("highlights", []),
             "confirmation_complete": False,
@@ -276,6 +280,7 @@ def resume_extraction_graph(
     resume_payload = {
         "user_confirmation": confirmation,
         "confirmed_task_ids": confirmed_task_ids or [],
+        "modified_tasks": modified_tasks or [],
     }
 
     token = _active_db_session.set(db)

@@ -10,7 +10,12 @@ from typing import Optional
 from uuid import UUID
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import HighlightNotFoundError, MeetingNotFoundError, UserNotFoundError
+from app.core.exceptions import (
+    HighlightNotFoundError,
+    InvalidOwnershipError,
+    MeetingNotFoundError,
+    UserNotFoundError,
+)
 from app.core.logging import get_logger
 from app.db.models.highlight import Highlight
 from app.db.models.meeting import Meeting
@@ -49,6 +54,15 @@ class HighlightService:
             raise MeetingNotFoundError(
                 f"Meeting with id '{meeting_id}' not found.",
                 details={"meeting_id": str(meeting_id)},
+            )
+
+        if user_id is not None and meeting.user_id != user_id:
+            logger.warning(
+                f"Get meeting highlights ownership violation: user {user_id} on meeting {meeting_id} owned by {meeting.user_id}"
+            )
+            raise InvalidOwnershipError(
+                f"Meeting with id '{meeting_id}' does not belong to user '{user_id}'.",
+                details={"meeting_id": str(meeting_id), "user_id": str(user_id)},
             )
 
         query = db.query(Highlight).filter(Highlight.meeting_id == meeting_id)
@@ -128,6 +142,15 @@ class HighlightService:
             raise MeetingNotFoundError(
                 f"Meeting with id '{highlight_in.meeting_id}' not found.",
                 details={"meeting_id": str(highlight_in.meeting_id)},
+            )
+
+        if meeting.user_id != highlight_in.user_id:
+            logger.warning(
+                f"Create highlight ownership violation: meeting {meeting.id} owned by {meeting.user_id}, but highlight assigned to {highlight_in.user_id}"
+            )
+            raise InvalidOwnershipError(
+                f"Meeting with id '{highlight_in.meeting_id}' does not belong to user '{highlight_in.user_id}'.",
+                details={"meeting_id": str(highlight_in.meeting_id), "user_id": str(highlight_in.user_id)},
             )
 
         user = db.query(User).filter(User.id == highlight_in.user_id).first()

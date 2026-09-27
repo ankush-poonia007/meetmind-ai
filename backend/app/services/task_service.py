@@ -137,6 +137,15 @@ class TaskService:
                 details={"meeting_id": str(meeting_id)},
             )
 
+        if user_id is not None and meeting.user_id != user_id:
+            logger.warning(
+                f"Get meeting tasks ownership violation: user {user_id} on meeting {meeting_id} owned by {meeting.user_id}"
+            )
+            raise InvalidOwnershipError(
+                f"Meeting with id '{meeting_id}' does not belong to user '{user_id}'.",
+                details={"meeting_id": str(meeting_id), "user_id": str(user_id)},
+            )
+
         query = db.query(Task).filter(Task.meeting_id == meeting_id)
         if user_id is not None:
             query = query.filter(Task.user_id == user_id)

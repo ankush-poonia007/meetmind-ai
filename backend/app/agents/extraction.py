@@ -49,12 +49,43 @@ class ExtractionAgent:
         4. Updates state and caches unconfirmed preview for HITL confirmation.
         """
         meeting_id_str = state.get("meeting_id", "")
+        person_name = state.get("person_name")
         user_name = state.get("user_name", "User")
         user_role = state.get("user_role", "")
         user_mentions = state.get("user_mentions", [])
         raw_transcript = state.get("raw_transcript", "")
 
-        logger.info(f"ExtractionAgent running for meeting {meeting_id_str}, user '{user_name}'")
+        logger.info(f"ExtractionAgent running for meeting {meeting_id_str}, user '{user_name}' (explicit: {person_name})")
+
+        # Guard: If explicit participant was not found or ambiguous, return structured empty result
+        if person_name and state.get("identity_confirmed") is False:
+            identity_msg = state.get("identity_message") or f"Could not identify participant '{person_name}'."
+            identity_status = state.get("identity_status") or "unresolved"
+            logger.info(f"Extraction skipped for unconfirmed participant '{person_name}': {identity_msg}")
+            unresolved_highlights = [{
+                "content": identity_msg,
+                "relevance_reason": f"Participant identity {identity_status}",
+            }]
+
+            from app.services.extraction_service import ExtractionService
+            import uuid
+            try:
+                m_uuid = uuid.UUID(meeting_id_str)
+                ExtractionService.set_extraction_preview(
+                    meeting_id=m_uuid,
+                    tasks=[],
+                    highlights=unresolved_highlights,
+                )
+            except Exception as exc:
+                logger.warning(f"Failed to cache extraction preview in service: {exc}")
+
+            return {
+                "extracted_tasks": [],
+                "extracted_highlights": unresolved_highlights,
+                "extraction_complete": True,
+                "current_stage": "extraction",
+                "session_action": "confirm",
+            }
 
         # 1. Fetch transcript context from DB if not in state
         if db and meeting_id_str and not raw_transcript:
@@ -74,6 +105,7 @@ class ExtractionAgent:
             user_role=user_role,
             mentions=user_mentions,
             transcript=raw_transcript,
+            is_explicit=bool(person_name),
         )
 
         logger.info(
@@ -110,6 +142,7 @@ class ExtractionAgent:
         user_role: str,
         mentions: list[str],
         transcript: str,
+        is_explicit: bool = False,
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         """
         Attempts AI extraction via ProviderGateway; falls back to deterministic
@@ -133,6 +166,7 @@ class ExtractionAgent:
             user_name=user_name,
             mentions=mentions,
             transcript=transcript,
+            is_explicit=is_explicit,
         )
 
     @classmethod
@@ -205,6 +239,7 @@ Output strictly valid JSON with this format:
         user_name: str,
         mentions: list[str],
         transcript: str,
+        is_explicit: bool = False,
     ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
         """
         Deterministic rule-based extraction for offline testing or when provider is unavailable.
@@ -212,7 +247,12 @@ Output strictly valid JSON with this format:
         tasks: list[dict[str, Any]] = []
         highlights: list[dict[str, Any]] = []
 
-        combined_lines = mentions if mentions else [line.strip() for line in transcript.splitlines() if line.strip()]
+        if mentions:
+            combined_lines = mentions
+        elif is_explicit:
+            combined_lines = []
+        else:
+            combined_lines = [line.strip() for line in transcript.splitlines() if line.strip()]
 
         task_patterns = [
             (r"(?:action item|todo|will take care of|needs to|please|assigned to|follow up on)\s*[:\-]?\s*(.*)", TaskPriority.HIGH),
@@ -224,6 +264,17 @@ Output strictly valid JSON with this format:
 
         for idx, line in enumerate(combined_lines):
             line_clean = line.strip()
+
+            # Prevent attributing tasks spoken by another participant to user_name, unless assigned
+            speaker_match = re.match(r"^\[?([A-Za-z0-9_\s\.\-]{1,40})\]?:\s*(.*)", line_clean)
+            if speaker_match:
+                speaker = speaker_match.group(1).strip().lower()
+                body = speaker_match.group(2).strip()
+                if user_name.lower() not in speaker:
+                    # Spoken by someone else: only attribute to user_name if user_name is explicitly addressed/assigned
+                    if user_name.lower() not in body.lower():
+                        continue
+
             # Task extraction
             for pattern, prio in task_patterns:
                 match = re.search(pattern, line_clean, re.IGNORECASE)
@@ -271,9 +322,15 @@ Output strictly valid JSON with this format:
             })
 
         if not highlights:
-            highlights.append({
-                "content": f"Meeting conducted with {user_name} participant engagement.",
-                "relevance_reason": "General meeting context",
-            })
+            if is_explicit and not mentions:
+                highlights.append({
+                    "content": f"No action items identified for {user_name}.",
+                    "relevance_reason": "Participant task extraction",
+                })
+            else:
+                highlights.append({
+                    "content": f"Meeting conducted with {user_name} participant engagement.",
+                    "relevance_reason": "General meeting context",
+                })
 
         return tasks, highlights

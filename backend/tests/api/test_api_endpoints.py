@@ -98,6 +98,11 @@ class BaseAPITestCase(unittest.TestCase):
         self.db.refresh(user)
         return user
 
+    def auth_headers(self, user: User) -> dict[str, str]:
+        from app.core.security import create_access_token
+        token = create_access_token(subject=user.id, email=user.email)
+        return {"Authorization": f"Bearer {token}"}
+
     def create_meeting(self, user: User, title: str = "Test Meeting") -> Meeting:
         meeting = Meeting(
             id=uuid.uuid4(),
@@ -139,13 +144,14 @@ class TestUsersRouter(BaseAPITestCase):
 
     def test_03_get_user_success(self) -> None:
         user = self.create_user()
-        res = self.client.get(f"/api/v1/users/{user.id}")
+        res = self.client.get(f"/api/v1/users/{user.id}", headers=self.auth_headers(user))
         self.assertEqual(res.status_code, 200)
         data = res.json()
         self.assertEqual(data["id"], str(user.id))
 
     def test_04_get_user_not_found(self) -> None:
-        res = self.client.get(f"/api/v1/users/{uuid.uuid4()}")
+        user = self.create_user()
+        res = self.client.get(f"/api/v1/users/{uuid.uuid4()}", headers=self.auth_headers(user))
         self.assertEqual(res.status_code, 404)
 
     def test_05_update_user_success(self) -> None:
@@ -153,6 +159,7 @@ class TestUsersRouter(BaseAPITestCase):
         res = self.client.put(
             f"/api/v1/users/{user.id}",
             json={"name": "Updated Name", "email": "newemail@example.com"},
+            headers=self.auth_headers(user),
         )
         self.assertEqual(res.status_code, 200)
         data = res.json()
@@ -177,7 +184,7 @@ class TestMeetingsRouter(BaseAPITestCase):
             "input_format": "text",
             "raw_transcript": "John: Let us build the API layer.",
         }
-        res = self.client.post("/api/v1/meetings/", json=payload)
+        res = self.client.post("/api/v1/meetings/", json=payload, headers=self.auth_headers(user))
         self.assertEqual(res.status_code, 201)
         data = res.json()
         self.assertEqual(data["title"], "Processing Transcript...")
@@ -188,7 +195,7 @@ class TestMeetingsRouter(BaseAPITestCase):
         self.create_meeting(user, title="Meeting 1")
         self.create_meeting(user, title="Meeting 2")
 
-        res = self.client.get(f"/api/v1/meetings/{user.id}")
+        res = self.client.get(f"/api/v1/meetings/{user.id}", headers=self.auth_headers(user))
         self.assertEqual(res.status_code, 200)
         items = res.json()
         self.assertEqual(len(items), 2)
@@ -197,7 +204,7 @@ class TestMeetingsRouter(BaseAPITestCase):
         user = self.create_user()
         meeting = self.create_meeting(user)
 
-        res = self.client.get(f"/api/v1/meetings/{meeting.id}/detail")
+        res = self.client.get(f"/api/v1/meetings/{meeting.id}/detail", headers=self.auth_headers(user))
         self.assertEqual(res.status_code, 200)
         detail = res.json()
         self.assertEqual(detail["id"], str(meeting.id))
@@ -207,11 +214,11 @@ class TestMeetingsRouter(BaseAPITestCase):
         user = self.create_user()
         meeting = self.create_meeting(user)
 
-        res = self.client.delete(f"/api/v1/meetings/{meeting.id}")
+        res = self.client.delete(f"/api/v1/meetings/{meeting.id}", headers=self.auth_headers(user))
         self.assertEqual(res.status_code, 204)
 
         # Verify 404 after deletion
-        get_res = self.client.get(f"/api/v1/meetings/{meeting.id}/detail")
+        get_res = self.client.get(f"/api/v1/meetings/{meeting.id}/detail", headers=self.auth_headers(user))
         self.assertEqual(get_res.status_code, 404)
 
 
@@ -237,7 +244,7 @@ class TestTasksRouter(BaseAPITestCase):
         self.db.add(t)
         self.db.commit()
 
-        res = self.client.get(f"/api/v1/tasks/{self.user.id}")
+        res = self.client.get(f"/api/v1/tasks/{self.user.id}", headers=self.auth_headers(self.user))
         self.assertEqual(res.status_code, 200)
         tasks = res.json()
         self.assertEqual(len(tasks), 1)
@@ -253,7 +260,7 @@ class TestTasksRouter(BaseAPITestCase):
         self.db.add(t)
         self.db.commit()
 
-        res = self.client.get(f"/api/v1/tasks/{self.user.id}/meeting/{self.meeting.id}")
+        res = self.client.get(f"/api/v1/tasks/{self.user.id}/meeting/{self.meeting.id}", headers=self.auth_headers(self.user))
         self.assertEqual(res.status_code, 200)
         tasks = res.json()
         self.assertEqual(len(tasks), 1)
@@ -272,6 +279,7 @@ class TestTasksRouter(BaseAPITestCase):
         res = self.client.put(
             f"/api/v1/tasks/{t.id}/status",
             json={"status": "complete"},
+            headers=self.auth_headers(self.user),
         )
         self.assertEqual(res.status_code, 200)
         data = res.json()
@@ -298,7 +306,7 @@ class TestTasksRouter(BaseAPITestCase):
         self.db.commit()
 
         # Filter by priority=high
-        res = self.client.get(f"/api/v1/tasks/{self.user.id}/filter?priority=high")
+        res = self.client.get(f"/api/v1/tasks/{self.user.id}/filter?priority=high", headers=self.auth_headers(self.user))
         self.assertEqual(res.status_code, 200)
         tasks = res.json()
         self.assertEqual(len(tasks), 1)
@@ -437,7 +445,7 @@ class TestHighlightsRouter(BaseAPITestCase):
         self.db.add(h)
         self.db.commit()
 
-        res = self.client.get(f"/api/v1/highlights/{self.user.id}/meeting/{self.meeting.id}")
+        res = self.client.get(f"/api/v1/highlights/{self.user.id}/meeting/{self.meeting.id}", headers=self.auth_headers(self.user))
         self.assertEqual(res.status_code, 200)
         data = res.json()
         self.assertEqual(len(data["highlights"]), 1)
@@ -448,7 +456,7 @@ class TestHighlightsRouter(BaseAPITestCase):
         self.db.add(h)
         self.db.commit()
 
-        res = self.client.get(f"/api/v1/highlights/{self.user.id}")
+        res = self.client.get(f"/api/v1/highlights/{self.user.id}", headers=self.auth_headers(self.user))
         self.assertEqual(res.status_code, 200)
         data = res.json()
         self.assertEqual(len(data["highlights"]), 1)

@@ -47,7 +47,7 @@ class SupervisorAgent:
         plan: list[str] = []
         if not state.get("ingestion_complete", False):
             plan.append("ingestion")
-        if not state.get("identity_confirmed", False):
+        if not state.get("identity_complete", False) and not state.get("identity_confirmed", False):
             plan.append("identity")
         if not state.get("extraction_complete", False):
             plan.append("extraction")
@@ -75,6 +75,10 @@ class SupervisorAgent:
             if state.get("confirmation_complete", False):
                 return "complete"
             return "confirmation"
+        if action == "extract":
+            if state.get("extraction_complete", False):
+                return "confirmation"
+            return "extraction"
         if action == "complete":
             return "complete"
 

@@ -1,0 +1,82 @@
+/* ==========================================================================
+   MeetMind AI — Typography System & Type Scale (Section 4)
+   ========================================================================== */
+
+/* ── Display: Hero Headline Only ─────────────────────────────────────────── */
+.text-display {
+  font-family: var(--font-serif);
+  font-size: clamp(48px, 7vw, 96px);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+/* ── H1: Page Titles ─────────────────────────────────────────────────────── */
+.text-h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--color-text-primary);
+}
+
+/* ── H2: Section Titles ──────────────────────────────────────────────────── */
+.text-h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+/* ── H3: Card Titles & Sub-sections ──────────────────────────────────────── */
+.text-h3 {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+
+/* ── Body Large: Intro Paragraphs ────────────────────────────────────────── */
+.text-body-lg {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+/* ── Body: Standard Text ─────────────────────────────────────────────────── */
+.text-body {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+/* ── Label: Tags, Status, Small Caps ─────────────────────────────────────── */
+.text-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ── Mono: Code & Timestamps ─────────────────────────────────────────────── */
+.text-mono {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* ── Headline Italic Emphasis (Wispr-style upright/italic effect) ────────── */
+.text-italic,
+em {
+  font-style: italic;
+}

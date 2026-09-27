@@ -44,9 +44,10 @@ resend
 # ── Scheduler ──────────────────────────────────────────────
 apscheduler
 
-# ── Utilities ──────────────────────────────────────────────
+# ── Utilities & Security ───────────────────────────────────
 python-dotenv
 python-jose
+argon2-cffi
 httpx
 aiofiles
 
