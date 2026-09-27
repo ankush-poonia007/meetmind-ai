@@ -39,26 +39,58 @@ function removeStoredItem(key) {
   }
 }
 
+function getUserIdFromToken(token) {
+  if (!token || typeof token !== 'string') return null;
+  try {
+    const parts = token.split('.');
+    if (parts.length !== 3) return null;
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+    const json = atob(base64);
+    const parsed = JSON.parse(json);
+    return parsed.sub || null;
+  } catch {
+    return null;
+  }
+}
+
 export const AuthContext = createContext(null);
 
 /**
- * AuthProvider — Centralized Authentication State Singleton (Batch 4.7).
+ * AuthProvider — Centralized Authentication State Singleton (Batch 4.7 & 5.1 Correction).
  *
  * Responsibilities:
  * - Single source of truth for authentication across the entire application.
  * - Manages token, authenticated user identity, session initialization, and loading states.
  * - Validates persisted JWT on application startup via GET /api/v1/auth/me.
+ * - Prevents stale localStorage user identity mismatches against active JWT token.
  * - Handles token expiration without clearing valid tokens on network failures.
  * - Synchronizes login, registration, and explicit logout across all components.
  */
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => getStoredItem(TOKEN_KEY));
   const [user, setUser] = useState(() => {
+    const storedToken = getStoredItem(TOKEN_KEY);
     const raw = getStoredItem(USER_KEY);
-    if (!raw) return null;
+    if (!storedToken || !raw) {
+      if (!storedToken) {
+        removeStoredItem(USER_KEY);
+        removeStoredItem(LEGACY_USER_ID_KEY);
+      }
+      return null;
+    }
     try {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      const tokenSub = getUserIdFromToken(storedToken);
+      // If token has a subject UUID and cached user does not match it, purge stale user data
+      if (tokenSub && parsed?.id && parsed.id !== tokenSub) {
+        removeStoredItem(USER_KEY);
+        removeStoredItem(LEGACY_USER_ID_KEY);
+        return null;
+      }
+      return parsed;
     } catch {
+      removeStoredItem(USER_KEY);
+      removeStoredItem(LEGACY_USER_ID_KEY);
       return null;
     }
   });
@@ -76,6 +108,8 @@ export function AuthProvider({ children }) {
     if (!storedToken) {
       setToken(null);
       setUser(null);
+      removeStoredItem(USER_KEY);
+      removeStoredItem(LEGACY_USER_ID_KEY);
       setIsInitializing(false);
       setNetworkError(false);
       return;
@@ -93,8 +127,8 @@ export function AuthProvider({ children }) {
       setError(null);
     } catch (err) {
       const formatted = formatApiError(err);
-      if (formatted.status === 401) {
-        // Genuinely expired or invalid token
+      if (formatted.status === 401 || formatted.status === 403 || formatted.status === 404) {
+        // Genuinely expired, forbidden, or non-existent user account
         removeStoredItem(TOKEN_KEY);
         removeStoredItem(USER_KEY);
         removeStoredItem(LEGACY_USER_ID_KEY);

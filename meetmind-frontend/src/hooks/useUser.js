@@ -13,8 +13,8 @@ export function useUser() {
   const { user, isInitializing, error, validateSession } = useAuth();
 
   return {
-    userId: user?.id || null,
-    user: user || null,
+    userId: isInitializing ? null : (user?.id || null),
+    user: isInitializing ? null : (user || null),
     loading: isInitializing,
     error: error || null,
     retrySession: validateSession,

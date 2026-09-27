@@ -8,6 +8,8 @@ import {
   MessageSquare,
   CheckSquare,
   Bot,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import SidebarLink from './SidebarLink';
 import SidebarFooter from './SidebarFooter';
@@ -18,13 +20,14 @@ import { useAuthModal } from '../../context/AuthModalContext';
  * Sidebar — MeetMind AI Main Navigation Sidebar
  * Deep Muted Slate Blue sidebar with subtle glossy finish.
  * Fixed 240px default width on desktop with horizontal resize support.
- * Collapses to 48px icons on viewports strictly < 768px.
+ * Supports desktop collapsible state (64px) with tooltip overlays and mobile 48px collapse.
  *
  * Features:
  * - Brand logo with SVG mark and serif typography
  * - Primary navigation links with active state indicator
  * - Persistent workspace subnavigation with smooth height and opacity transitions
  * - Interactive right-edge resize handle with keyboard accessibility & persistence
+ * - Desktop collapse / expand toggle with tooltip
  * - Responsive tooltip labels in collapsed view
  * - Accessible footer with versioning and repository links
  */
@@ -36,6 +39,8 @@ function Sidebar({
   defaultWidth = 240,
   isResizing = false,
   setIsResizing,
+  isCollapsed = false,
+  onToggleCollapse,
 }) {
   const location = useLocation();
   const isWorkspace = location.pathname.startsWith('/workspace');
@@ -103,10 +108,10 @@ function Sidebar({
 
   return (
     <aside
-      className={`sidebar ${isResizing ? 'is-resizing' : ''}`}
+      className={`sidebar ${isResizing ? 'is-resizing' : ''} ${isCollapsed ? 'is-collapsed' : ''}`}
       aria-label="Application navigation"
     >
-      {/* ── Brand Logo Header ─────────────────────────────────────────── */}
+      {/* ── Brand Logo Header & Collapse Toggle ─────────────────────────── */}
       <div className="sidebar-header">
         <Link to="/" className="sidebar-logo" aria-label="MeetMind Home">
           <svg
@@ -132,6 +137,27 @@ function Sidebar({
           </svg>
           <span className="sidebar-logo-text sidebar-label">MeetMind</span>
         </Link>
+
+        {/* ── Desktop Collapse / Expand Toggle Control ──────────────────── */}
+        <button
+          type="button"
+          className="sidebar-toggle-btn"
+          onClick={onToggleCollapse}
+          aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          id="sidebar-collapse-toggle-btn"
+        >
+          {isCollapsed ? (
+            <PanelLeftOpen size={18} aria-hidden="true" />
+          ) : (
+            <PanelLeftClose size={18} aria-hidden="true" />
+          )}
+          {isCollapsed && (
+            <span className="sidebar-tooltip" role="tooltip" aria-hidden="true">
+              Expand sidebar
+            </span>
+          )}
+        </button>
       </div>
 
       {/* ── Primary Navigation ────────────────────────────────────────── */}
@@ -141,7 +167,7 @@ function Sidebar({
           to="/workspace"
           label="Workspace"
           icon={LayoutDashboard}
-          end={false}
+          end={true}
           onClick={handleWorkspaceClick}
         />
         <SidebarLink to="/docs" label="Documentation" icon={BookOpen} end={true} />
@@ -195,22 +221,24 @@ function Sidebar({
       {/* ── Sidebar Footer ────────────────────────────────────────────── */}
       <SidebarFooter />
 
-      {/* ── Desktop Resizable Edge Handle ────────────────────────────── */}
-      <div
-        className={`sidebar-resize-handle ${isResizing ? 'is-resizing' : ''}`}
-        role="separator"
-        tabIndex={0}
-        aria-label="Resize sidebar"
-        aria-orientation="vertical"
-        aria-valuenow={width}
-        aria-valuemin={minWidth}
-        aria-valuemax={maxWidth}
-        onMouseDown={handleMouseDown}
-        onKeyDown={handleKeyDown}
-        title="Drag to resize sidebar (or use Left/Right arrow keys)"
-      >
-        <div className="sidebar-resize-handle-line" aria-hidden="true" />
-      </div>
+      {/* ── Desktop Resizable Edge Handle (only active when expanded) ── */}
+      {!isCollapsed && (
+        <div
+          className={`sidebar-resize-handle ${isResizing ? 'is-resizing' : ''}`}
+          role="separator"
+          tabIndex={0}
+          aria-label="Resize sidebar"
+          aria-orientation="vertical"
+          aria-valuenow={width}
+          aria-valuemin={minWidth}
+          aria-valuemax={maxWidth}
+          onMouseDown={handleMouseDown}
+          onKeyDown={handleKeyDown}
+          title="Drag to resize sidebar (or use Left/Right arrow keys)"
+        >
+          <div className="sidebar-resize-handle-line" aria-hidden="true" />
+        </div>
+      )}
     </aside>
   );
 }

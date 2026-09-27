@@ -59,6 +59,7 @@ createRoot(document.getElementById('root')).render(
                 <Route path="tasks" element={<Tasks />} />
                 <Route path="chat" element={<Chat />} />
               </Route>
+              <Route path="chat" element={<Navigate to="/workspace/chat" replace />} />
               <Route path="docs" element={<Documentation />} />
               <Route path="contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />

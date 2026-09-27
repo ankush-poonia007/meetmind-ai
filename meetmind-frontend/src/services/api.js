@@ -149,6 +149,104 @@ export async function getAllHighlights(userId, config = {}) {
 }
 
 /**
+ * Retrieves the full detail for a single meeting, including task and highlight counts.
+ * Contract: GET /api/v1/meetings/{meeting_id}/detail -> MeetingDetailResponse
+ *
+ * @param {string} meetingId - Meeting UUID
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<object>}
+ */
+export async function getMeetingDetail(meetingId, config = {}) {
+  const response = await apiClient.get(`/meetings/${meetingId}/detail`, config);
+  return response.data;
+}
+
+/**
+ * Creates a new meeting with metadata and raw transcript content.
+ *
+ * Contract: POST /api/v1/meetings/?submitter_name={name}&submitter_role={role}
+ * Body (JSON): MeetingCreate {
+ *   user_id: string (UUID),
+ *   meeting_date: string (YYYY-MM-DD),
+ *   raw_transcript: string,
+ *   title?: string,
+ *   organization?: string,
+ *   meeting_time?: string,
+ *   input_format?: 'text' | 'txt' | 'pdf'
+ * }
+ *
+ * @param {object} data - MeetingCreate payload object
+ * @param {object} [paramsOrConfig={}] - Query parameters (submitter_name, submitter_role) or Axios config
+ * @param {import('axios').AxiosRequestConfig} [extraConfig={}]
+ * @returns {Promise<object>} MeetingResponse
+ */
+export async function createMeeting(data, paramsOrConfig = {}, extraConfig = {}) {
+  let params = {};
+  let config = {};
+
+  if (paramsOrConfig.submitter_name || paramsOrConfig.submitter_role || paramsOrConfig.params) {
+    params = paramsOrConfig.params || {
+      ...(paramsOrConfig.submitter_name ? { submitter_name: paramsOrConfig.submitter_name } : {}),
+      ...(paramsOrConfig.submitter_role ? { submitter_role: paramsOrConfig.submitter_role } : {}),
+    };
+    config = extraConfig;
+  } else if (paramsOrConfig.headers || paramsOrConfig.signal) {
+    config = paramsOrConfig;
+  } else {
+    params = paramsOrConfig;
+    config = extraConfig;
+  }
+
+  const response = await apiClient.post('/meetings/', data, {
+    ...config,
+    params: { ...params, ...(config.params || {}) },
+  });
+  return response.data;
+}
+
+/**
+ * Retrieves all tasks for a user within a specific meeting.
+ * Contract: GET /api/v1/tasks/{user_id}/meeting/{meeting_id} -> list[TaskResponse]
+ *
+ * @param {string} userId - User UUID
+ * @param {string} meetingId - Meeting UUID
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<Array<object>>}
+ */
+export async function getMeetingTasks(userId, meetingId, config = {}) {
+  const response = await apiClient.get(`/tasks/${userId}/meeting/${meetingId}`, config);
+  return response.data;
+}
+
+/**
+ * Updates the status of a single task.
+ * Contract: PUT /api/v1/tasks/{task_id}/status -> TaskResponse
+ *
+ * @param {string} taskId - Task UUID
+ * @param {'pending' | 'complete'} status - New status value
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<object>}
+ */
+export async function updateTaskStatus(taskId, status, config = {}) {
+  const response = await apiClient.put(`/tasks/${taskId}/status`, { status }, config);
+  return response.data;
+}
+
+/**
+ * Fetches filtered tasks for a user.
+ * Contract: GET /api/v1/tasks/{user_id}/filter -> list[TaskResponse]
+ *
+ * @param {string} userId - User UUID
+ * @param {object} params - Filter query parameters (meeting_id, status, priority, role, deadline_start, deadline_end)
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<Array<object>>}
+ */
+export async function filterTasks(userId, params = {}, config = {}) {
+  const response = await apiClient.get(`/tasks/${userId}/filter`, { ...config, params });
+  return response.data;
+}
+
+/**
  * Retrieves a user profile by unique user identifier.
  * Contract: GET /api/v1/users/{user_id} -> UserResponse
  *
@@ -238,6 +336,119 @@ export async function logoutUser(config = {}) {
       // localStorage restriction
     }
   }
+}
+
+/**
+ * Submits a question to the meeting-scoped Q&A pipeline.
+ * Contract: POST /api/v1/chat/{meeting_id}/message -> ChatResponse
+ *
+ * @param {string} meetingId - Meeting UUID
+ * @param {{ question: string, user_id: string }} data
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<{ meeting_id: string, answer: string, sources: Array<{ speaker?: string, timestamp?: string, excerpt: string }>, confidence: 'high' | 'medium' | 'low' }>}
+ */
+export async function sendMessage(meetingId, data, config = {}) {
+  const response = await apiClient.post(`/chat/${meetingId}/message`, data, config);
+  return response.data;
+}
+
+/**
+ * Retrieves chronological conversation history for a specific meeting.
+ * Contract: GET /api/v1/chat/{meeting_id}/history -> ChatHistoryResponse
+ *
+ * @param {string} meetingId - Meeting UUID
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<{ meeting_id: string, messages: Array<{ id: string, meeting_id: string, user_id: string, role: 'user' | 'assistant', content: string, created_at: string }> }>}
+ */
+export async function getChatHistory(meetingId, config = {}) {
+  const response = await apiClient.get(`/chat/${meetingId}/history`, config);
+  return response.data;
+}
+
+/**
+ * Deletes all conversation messages for a specific meeting.
+ * Contract: DELETE /api/v1/chat/{meeting_id}/history -> 204 No Content
+ *
+ * @param {string} meetingId - Meeting UUID
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<void>}
+ */
+export async function clearChatHistory(meetingId, config = {}) {
+  const response = await apiClient.delete(`/chat/${meetingId}/history`, config);
+  return response.data;
+}
+
+/**
+ * Triggers multi-agent extraction pipeline on meeting transcript.
+ * Contract: POST /api/v1/extraction/{meeting_id}/run -> ExtractionPreviewResponse
+ * Note: person_name is forwarded in payload for explicit identity extraction.
+ *
+ * @param {string} meetingId - Meeting UUID
+ * @param {{ user_id: string, meeting_id?: string, person_name?: string }} data
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<{ meeting_id: string, tasks: Array<object>, highlights: Array<object>, task_count: number, highlight_count: number, extraction_complete: boolean }>}
+ */
+export async function runExtraction(meetingId, data, config = {}) {
+  const payload = {
+    meeting_id: meetingId,
+    user_id: data.user_id,
+    ...(data.person_name ? { person_name: data.person_name } : {}),
+  };
+  const response = await apiClient.post(`/extraction/${meetingId}/run`, payload, config);
+  return response.data;
+}
+
+/**
+ * Retrieves extracted action items and highlights awaiting human-in-the-loop confirmation.
+ * Contract: GET /api/v1/extraction/{meeting_id}/preview?user_id={user_id} -> ExtractionPreviewResponse
+ *
+ * @param {string} meetingId - Meeting UUID
+ * @param {string} userId - User UUID
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<{ meeting_id: string, tasks: Array<object>, highlights: Array<object>, task_count: number, highlight_count: number, extraction_complete: boolean }>}
+ */
+export async function getExtractionPreview(meetingId, userId, config = {}) {
+  const response = await apiClient.get(`/extraction/${meetingId}/preview`, {
+    ...config,
+    params: { user_id: userId, ...(config.params || {}) },
+  });
+  return response.data;
+}
+
+/**
+ * Processes human-in-the-loop confirmation decision (yes, no, or partial) and persists approved items.
+ * Contract: POST /api/v1/extraction/{meeting_id}/confirm -> ExtractionResult
+ * Note: includes modified_tasks payload to support edited task descriptions and deadlines.
+ *
+ * @param {string} meetingId - Meeting UUID
+ * @param {{ user_id: string, meeting_id?: string, user_confirmation: 'yes' | 'no' | 'partial', confirmed_task_ids?: Array<string>, modified_tasks?: Array<object> }} data
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<{ meeting_id: string, saved_tasks: number, discarded_tasks: number, saved_highlights: number, confirmation_complete: boolean, dashboard_ready: boolean }>}
+ */
+export async function confirmExtraction(meetingId, data, config = {}) {
+  const payload = {
+    meeting_id: meetingId,
+    user_id: data.user_id,
+    user_confirmation: data.user_confirmation,
+    ...(data.confirmed_task_ids ? { confirmed_task_ids: data.confirmed_task_ids } : {}),
+    ...(data.modified_tasks ? { modified_tasks: data.modified_tasks } : {}),
+  };
+  const response = await apiClient.post(`/extraction/${meetingId}/confirm`, payload, config);
+  return response.data;
+}
+
+/**
+ * Retrieves highlights for a specific meeting, scoped to the specified user.
+ * Contract: GET /api/v1/highlights/{user_id}/meeting/{meeting_id} -> HighlightListResponse
+ *
+ * @param {string} userId - User UUID
+ * @param {string} meetingId - Meeting UUID
+ * @param {import('axios').AxiosRequestConfig} [config={}]
+ * @returns {Promise<{ user_id: string, meeting_id: string | null, highlights: Array<object> }>}
+ */
+export async function getMeetingHighlights(userId, meetingId, config = {}) {
+  const response = await apiClient.get(`/highlights/${userId}/meeting/${meetingId}`, config);
+  return response.data;
 }
 
 export default apiClient;
