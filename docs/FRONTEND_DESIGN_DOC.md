@@ -776,7 +776,7 @@ File: `src/pages/Contact.jsx`
 just want to say hello?"
 
 [Icon + Text links]
-📧 ankush@email.com
+📧 pooniaankush007@gmail.com
 🐙 github.com/ankush-poonia007
 💼 linkedin.com/in/ankush
 📱 +91 XXXXXXXXXX
