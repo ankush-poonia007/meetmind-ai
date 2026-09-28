@@ -348,7 +348,14 @@ export async function logoutUser(config = {}) {
  * @returns {Promise<{ meeting_id: string, answer: string, sources: Array<{ speaker?: string, timestamp?: string, excerpt: string }>, confidence: 'high' | 'medium' | 'low' }>}
  */
 export async function sendMessage(meetingId, data, config = {}) {
-  const response = await apiClient.post(`/chat/${meetingId}/message`, data, config);
+  const response = await apiClient.post(
+    `/chat/${meetingId}/message`,
+    data,
+    {
+      timeout: 60000,
+      ...config,
+    }
+  );
   return response.data;
 }
 
