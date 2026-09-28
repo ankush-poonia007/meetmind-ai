@@ -43,18 +43,13 @@ TEMPORAL_DECISION_KEYWORDS: list[str] = [
     "deadline",
     "soft deadline",
     "due date",
-    "due",
     # Identity / role / assignment queries
-    "who",
     "whose",
     "role of",
-    "what did",
-    "assigned",
     "assignee",
     "responsible",
     "owner",
     # Decisions / agreements
-    "decision",
     "decided",
     "decide",
     "agreed",
@@ -66,7 +61,6 @@ TEMPORAL_DECISION_KEYWORDS: list[str] = [
     "february",
     "march",
     "april",
-    "may",
     "june",
     "july",
     "august",
@@ -264,6 +258,12 @@ class QAAgent:
             else ""
         )
 
+        transcript_context = (
+            (raw_transcript[:4000] + "...[truncated]")
+            if raw_transcript and len(raw_transcript) > 4000
+            else raw_transcript
+        )
+
         context_blocks: list[str] = []
         for i, c in enumerate(chunks):
             speaker_tag = f"[{c.speaker_name or 'Speaker'}]"
@@ -285,7 +285,7 @@ Meeting Excerpts:
 {context_str}
 
 Full Meeting Transcript:
-{raw_transcript}
+{transcript_context}
 
 Grounded Answer:"""
         else:
