@@ -243,9 +243,26 @@ function Chat() {
       );
     } catch (err) {
       const formatted = formatApiError(err);
-      setChatError(formatted.message || 'Failed to get answer from Q&A pipeline.');
-      // Remove optimistic message on error so user can retry
-      setMessages((prev) => prev.filter((m) => m.id !== optimisticId));
+      setIsThinking(false);
+
+      const isTimeout =
+        err?.code === 'ECONNABORTED' ||
+        (err?.message && err.message.toLowerCase().includes('timeout'));
+
+      if (isTimeout) {
+        setChatError(
+          'The AI is taking longer than expected. Please try again.'
+        );
+      } else if (!formatted.isCanceled) {
+        setChatError(formatted.message || 'Something went wrong. Please try again.');
+      }
+
+      // Remove optimistic user message on failure so chat stays clean
+      setMessages((prev) =>
+        prev.filter(
+          (m) => !(m.isOptimistic === true && m.role === 'user')
+        )
+      );
     } finally {
       setIsThinking(false);
       setTimeout(() => scrollToBottom('smooth'), 80);
